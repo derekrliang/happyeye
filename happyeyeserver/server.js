@@ -6,18 +6,6 @@ var elastic = require('./elasticsearch');
 
 var port = normalizePort(process.env.PORT || '3000');
 
-
-/* 
- Intialising elastic seach - could also be move to another module 
-
-
-console.log('Preparing elasticseach');
-console.log(elastic.deleteIndex);
-console.log(elastic.initIndex);
-console.log(elastic.initMapping);
-
-*/
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
