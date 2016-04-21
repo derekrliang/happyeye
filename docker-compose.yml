@@ -1,0 +1,20 @@
+version: '2'
+services: 
+ happyeyeserver: 
+  build: ./happyeyeserver/.
+  ports: 
+   - 3000:3000
+  links:
+   - elastic
+ elastic:
+  image: elasticsearch
+  ports:
+   - 9200:9200
+   - 9300:9300
+  links:
+   - kibana
+ kibana:
+  image: kibana
+  ports:
+   - 5601:5601
+
