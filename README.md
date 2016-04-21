@@ -13,7 +13,8 @@ Document format
 * {happystatus: 'average'|'below'|'above'}  
 
 Deployment
-* Put things into docker containers ...
+* docker-compose start
+* execute "appyeyeserver/helpers/elastic_setup.sh" to create index and mapping
 
 #### middleware: happyeyeserver ####
 
