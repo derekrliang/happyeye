@@ -21,3 +21,7 @@ A server component that accepts post to a given url and store meeter documents i
 
 * 'npm install' to initialise
 * 'grunt' for development with linting, watch, server reload ...
+
+#### containers ####
+
+Docker-compose start should do the trick
