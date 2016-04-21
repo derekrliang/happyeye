@@ -1,9 +1,40 @@
+<!DOCTYPE html>
 <html>
 <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script>
+
+$(document).ready(function(){
+    $('#below_click').click(function(){
+        $("#click_status").html("You clicked below");
+    });
+    
+    $('#above_click').click(function(){
+        $("#click_status").html("You clicked above");
+    });
+
+    $('#average_click').click(function(){
+        $("#click_status").html("You clicked average");
+        post("average");
+    });
+});
+
+ function post(status) {
+ $.post(":3000/happy",
+        {
+          happystatus: status
+        },
+        function(data,status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });   
+}
+
+</script>
 </head>
 <body>
-<a href="http://localhost:3000/happy?happystatus=above" ><img src="above.png"/></a>
-<a href="http://localhost:3000/happy?happystatus=average" ><img src="average.png"/></a>
-<a href="http://localhost:3000/happy?happystatus=below" ><img src="below.png"/></a>
+<div id="above"> <img src="above.png" id="above_click"></div>
+<div id="average"> <img src="average.png" id="average_click"> </div>
+<div id="below"> <img src="below.png" id="below_click"> </div>
+<div id="click_status"><p>Click status</p></div>
 </body>
 </html>
