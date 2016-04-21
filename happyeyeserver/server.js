@@ -44,9 +44,28 @@ app.post("/happy", function(req, res) {
 
 
 app.get("/happy", function(req, res) {
-    console.log('Server:get /happy (501, Not implemented)');
-    res.status(501).send('Not implemented');
+    console.log('Server:get /happy ' + req.ip + ' ' + JSON.stringify(req.query.happystatus));
+   
+  /* Refactor with post - above */  
+  if (!(req.query.happystatus)) {
+        console.log('(400, Invalid format) Server:get /happy ' + req.ip + ' ' + JSON.stringify(req.query));
+        res.status(400).send("Invalid format");
+    } else {
+        if (!((req.query.happystatus === 'average') || (req.query.happystatus === 'below') || (req.query.happystatus === 'above'))) {
+            console.log('(400, Invalid format) Server:post /get ' + req.ip + ' ' + JSON.stringify(req.query));
+            res.status(400).send("Invalid format");
+        } else {
+            if (!(elastic.addDocument(req.query.happystatus))) {
+                console.log('(Failed to store) Server:get /happy ' + req.ip + ' ' + JSON.stringify(req.query));
+                res.status(500).send("Failed to store happy status");
+            } else {
+                console.log('(Stored) Server:get /happy ' + req.ip + ' ' + JSON.stringify(req.query));
+                res.status(200).send("Happy status stored successfully");
+            }
+        }
+    }      
 });
+
 
 // A bit of error response on most used urls
 app.get("/", function(req, res) {
