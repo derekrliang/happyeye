@@ -1,4 +1,5 @@
 var express = require("express");
+var cors = require("cors");
 var bodyParser = require('body-parser');
 var app = express();
 
@@ -8,12 +9,7 @@ var port = normalizePort(process.env.PORT || '3000');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+app.use(cors());
 
 //Handling request towards /happy
 // Post is expecting 'application/x-www-form-urlencoded'
