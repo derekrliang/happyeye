@@ -29,11 +29,39 @@ $(document).ready(function(){
 }
 
 </script>
+<style>
+    table, th, td {
+    border: 0px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    width: 200px;
+}
+th, td {
+    text-align: center;
+}
+</style>
 </head>
 <body>
-<div id="above"> <img src="above.png" id="above_click"></div>
-<div id="average"> <img src="average.png" id="average_click"> </div>
-<div id="below"> <img src="below.png" id="below_click"> </div>
-<div id="click_status"><p>status</p></div>
+<table>
+  <tr><td></td><td></td><td></td></tr>
+  <tr>
+   <td colspan="3"><h1>Employee happiness sensor</h1</td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><div id="above"> <img src="above.png" id="above_click" height="200" width="200"></div></td>
+    <td><div id="average"> <img src="average.png" id="average_click" height="200" width="200"> </div></td> 
+    <td><div id="below"> <img src="below.png" id="below_click" height="200" width="200"> </div></td>
+  </tr>
+</table>
+<table>
+  <tr><td></td><td></td><td></td></tr>
+  <tr>
+   <td colspan="3"><div id="click_status"><p>.</p></div></td>
+  </tr>
+</table>
 </body>
 </html>
