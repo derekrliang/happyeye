@@ -6,14 +6,17 @@
 
 $(document).ready(function(){
     $('#below_click').click(function(){
+        fade_click("#below_click");
         post("below");
     });
     
     $('#above_click').click(function(){
+        fade_click("#above_click");
         post("above");
     });
 
     $('#average_click').click(function(){
+        fade_click("#average_click");
         post("average");
     });
 });
@@ -26,6 +29,11 @@ $(document).ready(function(){
         function(data,stat){
           $("#click_status").html("Sensordata (" + status + ") sendt (" + stat + ")");
         });   
+}
+
+function fade_click(item){
+  $(item).fadeOut(50);
+  $(item).fadeIn(50);  
 }
 
 </script>
