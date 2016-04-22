@@ -19,12 +19,12 @@ $(document).ready(function(){
 });
 
  function post(status) {
- $.post("http://localhost:3000/happy",
+ $.post("http://happymeeter.cloudapp.net:3000/happy",
         {
           happystatus: status
         },
         function(data,stat){
-            $("#click_status").html("Sensordata (" + status + ") sendt (" + stat + ")");
+          $("#click_status").html("Sensordata (" + status + ") sendt (" + stat + ")");
         });   
 }
 
@@ -34,6 +34,6 @@ $(document).ready(function(){
 <div id="above"> <img src="above.png" id="above_click"></div>
 <div id="average"> <img src="average.png" id="average_click"> </div>
 <div id="below"> <img src="below.png" id="below_click"> </div>
-<div id="click_status"><p></p></div>
+<div id="click_status"><p>status</p></div>
 </body>
 </html>

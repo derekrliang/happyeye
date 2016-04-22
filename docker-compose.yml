@@ -14,6 +14,12 @@ services:
    - 3000:3000
   links:
    - elastic:elastic
+ happysensor: 
+  build: ./happysensor/.
+  ports: 
+   - 80:80
+  links:
+   - happyeyeserver:happyeyeserver
  kibana:
   image: kibana
   environment:
@@ -22,3 +28,4 @@ services:
    - 5601:5601
   links:
    - elastic:elastic
+

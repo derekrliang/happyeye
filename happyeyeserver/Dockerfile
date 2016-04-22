@@ -9,5 +9,6 @@ RUN npm install
 COPY server.js elasticsearch.js /usr/src/app/
 
 EXPOSE 3000 
+
 CMD [ "npm", "start" ]
 
