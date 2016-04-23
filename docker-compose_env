@@ -1,0 +1,2 @@
+# Phone home address to happyserver, source prior to using docker-compose
+export HAPPYSERVERURL=localhost

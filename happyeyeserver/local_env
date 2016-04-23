@@ -1,0 +1,3 @@
+# Environment variables to source for runnig happyserver locally
+export PORT=3000
+export ELASTICURL=localhost:9200

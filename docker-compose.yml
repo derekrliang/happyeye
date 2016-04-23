@@ -16,6 +16,8 @@ services:
    - elastic:elastic
  happysensor: 
   build: ./happysensor/.
+  environment:
+  - HAPPYSERVERURL=$HAPPYSERVERURL
   ports: 
    - 80:80
  kibana:
