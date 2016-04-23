@@ -13,7 +13,7 @@ Document format
 * {happystatus: 'average'|'below'|'above'}  
 
 Deployment
-* source local_env
+* Alter and then source 'local_env'
 * docker-compose start
 * execute "elasticsearch/elastic_setup.sh" to create index and mapping
 
