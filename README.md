@@ -13,8 +13,9 @@ Document format
 * {happystatus: 'average'|'below'|'above'}  
 
 Deployment
+* source local_env
 * docker-compose start
-* execute "appyeyeserver/helpers/elastic_setup.sh" to create index and mapping
+* execute "elasticsearch/elastic_setup.sh" to create index and mapping
 
 #### middleware: happyeyeserver ####
 
@@ -22,7 +23,3 @@ A server component that accepts post to a given url and store meeter documents i
 
 * 'npm install' to initialise
 * 'grunt' for development with linting, watch, server reload ...
-
-#### containers ####
-
-Docker-compose start should do the trick
