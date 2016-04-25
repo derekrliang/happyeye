@@ -19,6 +19,10 @@ $(document).ready(function(){
         fade_click("#average_click");
         post("average");
     });
+    
+    $('#moreinfo').click(function(){
+        $('#information').toggle();
+    });
 });
 
  function post(status) {
@@ -71,5 +75,31 @@ th, td {
    <td colspan="3"><div id="click_status"><p>.</p></div></td>
   </tr>
 </table>
+<table>
+  <tr><td></td><td></td><td></td></tr>
+  <tr>
+    <td colspan="3"><div id="moreinfo" style="text-align:center">More information</div></td>
+    
+  </tr>
+  <tr>
+    <td colspan="3">
+     <div id="information" style="text-align:center; display:none;">
+      <b>This is the employee happiness sensor.</b><p>
+      You submitt a feedback document logging happyness status, average, above average and below average. 
+      Submitting happyness feedback is "anonymous". We do not log any personal information.</p>
+      Frequency. You can submitt feedback as often as you want, but twice a day is perhaps enough. 
+      We have no trotteling mechanism avoiding anyone from hammering the system with feedback.</p>
+      Submitting from other systems is avilable using a :3000/happy with either get or post.
+      Format is {happystatus: 'average'|'below'|'above'}</p>
+      Results are available to anyone (in the default setup) and exposed in Kibana at :5601/
+         
+   </div> 
+      
+      
+    </td>
+  </tr>
+  </table>
+ 
+  
 </body>
 </html>
