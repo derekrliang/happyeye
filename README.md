@@ -3,11 +3,11 @@ A simple happymeeter solution which should capture information about employee ha
 
 Work has just started - we will evolve with the demand :)
 
-
 General architecture
-* Happiness submitters frontend: Anything that can post a form/JSON to a web service
+* Happiness submitters frontend: Anything that can post a form/JSON to a web service. We provide a static html file/interface
 * Middleware: A web service accepting request storing these into a elasticsearch database
-* Happines reviewers frontend: Anything that can work with JSON documents - why not use Kibana?
+* Happiness reviewers frontend: Kibana
+* Happiness storage: Elasticsearch
 
 Document format
 * {happystatus: 'average'|'below'|'above'}  
