@@ -1,15 +1,16 @@
 #!/bin/bash
 
-#curl -XDELETE 'http://localhost:9200/happymeeter' 
-curl -XPOST localhost:9200/happymeeter -d '{
+#curl -XDELETE 'http://localhost:9200/happymeter' 
+curl -XPOST localhost:9200/happymeter -d '{
     "settings" : {
         "number_of_shards" : 1
     },
     "mappings" : {
-        "happymeeter" : {
+        "happymeter" : {
             "properties" : {
-                happystatus: { type: "string" },
-                timestamp: { type: "date"}   
+                happystatus: { type: "string", index: "not_analyzed" },
+                timestamp: {type: "date"},
+                tags: {type: "string", index: "not_analyzed"}
             }
         }
     }

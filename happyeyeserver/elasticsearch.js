@@ -5,7 +5,7 @@ var elasticClient = new elasticsearch.Client({
     log: 'info'
 });
 
-var indexName = "happymeeter";
+var indexName = "happymeter";
 
 /* check if the index exists */
 function indexExists() {  
@@ -19,7 +19,7 @@ exports.indexExists = indexExists;
 function addDocument(happystatus) {  
     return elasticClient.index({
         index: indexName,
-        type: "happymeeter",
+        type: "happymeter",
         body: {
             happystatus: happystatus,
             timestamp: Date.now()
