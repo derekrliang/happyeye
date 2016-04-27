@@ -40,7 +40,12 @@ $(document).ready(function(){
           happystatus: status
         },
         function(data,stat){
-          $("#click_status").html("Sensordata (" + status + ") sendt (" + stat + ")");
+         if (stat==="success") {
+ 	   msg = '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Status '+status+' posted with ' +stat+'!</div>' }
+         else {
+ 	   msg = '<div class="alert alert-warning""><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Status '+status+' posted with ' +stat+'!</div>' }
+	 }
+         $("#click_status").html(msg);
         });   
 }
 
@@ -66,9 +71,8 @@ function fade_click(item){
 
 	</div><!-- panel body -->
 	</div><!-- panel default -->
-	
+	<div id="click_status"></div>
 	<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#info">More information</button>
-
 	<div id="info" class="collapse">
 		<div class="panel panel-success">
 		<div class="panel-heading"><h5>Information</h5></div>
@@ -90,14 +94,6 @@ function fade_click(item){
 		</div>
 	</div><!-- collapse -->
 </div><!-- container -->
-
-<!-- What is this? -->
-<table>
-  <tr><td></td><td></td><td></td></tr>
-  <tr>
-   <td colspan="3"><div id="click_status"><p>.</p></div></td>
-  </tr>
-</table>
  
   
 </body>
