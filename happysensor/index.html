@@ -2,6 +2,8 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -16,28 +18,81 @@
 
 <script>
 
+// override jquery validate plugin defaults
+$.validator.setDefaults({
+    highlight: function(element) {
+        $(element).closest('.form-group').addClass('has-error');
+    },
+    unhighlight: function(element) {
+        $(element).closest('.form-group').removeClass('has-error');
+    },
+    errorElement: 'span',
+    errorClass: 'help-block',
+    errorPlacement: function(error, element) {
+        if(element.parent('.input-group').length) {
+            error.insertAfter(element.parent());
+        } else {
+            error.insertAfter(element);
+        }
+    }
+});
+
+jQuery.validator.addMethod("tagsformat", function(value, element) 
+{
+return this.optional(element) || /^[A-Za-z0-9\s]+$/.test(value);
+}, "Tags can only contain alphanumerics");
+
 $(document).ready(function(){
+	
+	$('#tags_form').validate({ 
+	 rules: {
+        tags: {
+            tagsformat: true,
+        }
+     }	
+    });   
+
+
     $('#below_click').click(function(){
         fade_click("#below_click");
-        post("below");
+		if ($('#tags_form').valid()) {
+            post("below",$("#tags").val());
+        } else {
+           	msg = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Tags can contain only alphanumerics, status not posted</div>' 
+            $("#click_status").html(msg);   
+        }
     });
     
     $('#above_click').click(function(){
-        fade_click("#above_click");
-        post("above");
+        fade_click("#above_click");	
+		if ($('#tags_form').valid()) {
+            post("above",$("#tags").val());
+        } else {
+           	msg = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Tags can contain only alphanumerics, status not posted</div>' 
+            $("#click_status").html(msg);  
+        }      
     });
 
     $('#average_click').click(function(){
         fade_click("#average_click");
-        post("average");
+        if ($('#tags_form').valid()) {
+            post("average",$("#tags").val());
+        } else {
+           	msg = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Tags can contain only alphanumerics, status not posted</div>' 
+            $("#click_status").html(msg);   
+        }
     });
+
     
 });
 
- function post(status) {
+
+function post(status,tags) {
+ console.log(status + " " + tags);	 
  $.post("http://localhost:3000/happy",
         {
-          happystatus: status
+          happystatus: status,
+		  tags: tags
         },
         function(data,stat){
          if (stat==="success") {
@@ -67,8 +122,18 @@ function fade_click(item){
 			  <div class="col-xs-4 text-center"><img src="average.png" class="img-circle" id="average_click" alt="above_click" width="50%" height="50%"></div>
 			  <div class="col-xs-4 text-center"><img src="below.png" class="img-circle" id="below_click" alt="below_click" width="50%" height="50%"></div>				  
 		</div><!-- grid (row) of smile -->			
-
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="form-group">
+					<form id="tags_form">
+  						<label for="tags">Tags:</label>
+  				    	<input type="text" class="form-control" id="tags" name="tags">
+					</form>
+				</div>
+			</div>
+	   </div> <!-- tag field -->	
 	</div><!-- panel body -->
+	
 	</div><!-- panel default -->
 	<div id="click_status"></div>
 	<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#info">More information</button>
@@ -79,6 +144,9 @@ function fade_click(item){
 			 <b>This is the employee happiness sensor</b><p>
 			 You submit a feedback document logging happiness status, average, above average and below average.
 			 Submitting happiness feedback is "anonymous". We do not log any personal information, neither any cookies with information.</p>         
+			 <b>Tags</b><p>
+			 Add tags represented as words containing alphanumerics. Minimum tag length is 3 chars. All tags will be converted to lower case. Tags with illegal chars will be discarded.
+			 Tags can be used to filter results.</p>	 
 			 <b>Frequency</b><p>
 			 You can submit feedback as often as you want, but twice a day is perhaps enough.
 			 We have no throttling mechanism avoiding anyone from hammering the system with feedback.</p>

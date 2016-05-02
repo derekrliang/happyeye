@@ -15,14 +15,10 @@ app.use(cors());
 // Post is expecting 'application/x-www-form-urlencoded'
 
 app.post("/happy", function(req, res) {
-    console.log('Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
-
-    /*do some rudamentary checking - could be moved to elastic module next
-     explore the express-validator module?
-     expected format is 
-            {happystatus: 'average'|'below'|'above'}  
-    */
-
+    var tagsToStore = [];
+   
+     console.log('Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
+        
     if (!(req.body.happystatus)) {
         console.log('(400, Invalid format) Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
         res.status(400).send("Invalid format");
@@ -31,11 +27,16 @@ app.post("/happy", function(req, res) {
             console.log('(400, Invalid format) Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
             res.status(400).send("Invalid format");
         } else {
-            if (!(elastic.addDocument(req.body.happystatus))) {
+            
+            if (req.body.tags) {
+              tagsToStore = processTags(req.body.tags);
+            }
+            
+            if (!(elastic.addDocument(req.body.happystatus,tagsToStore))) {
                 console.log('(Failed to store) Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
                 res.status(500).send("Failed to store happy status");
             } else {
-                console.log('(Stored) Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
+                console.log('(Stored) Server:post /happy ' + req.ip + ' ' + req.body.happystatus + ' : ' + tagsToStore);
                 res.status(200).send("Happy status stored successfully");
             }
         }
@@ -43,31 +44,6 @@ app.post("/happy", function(req, res) {
 
 }
 );
-
-
-app.get("/happy", function(req, res) {
-    console.log('Server:get /happy ' + req.ip + ' ' + JSON.stringify(req.query.happystatus));
-   
-  /* Refactor with post - above */  
-  if (!(req.query.happystatus)) {
-        console.log('(400, Invalid format) Server:get /happy ' + req.ip + ' ' + JSON.stringify(req.query));
-        res.status(400).send("Invalid format");
-    } else {
-        if (!((req.query.happystatus === 'average') || (req.query.happystatus === 'below') || (req.query.happystatus === 'above'))) {
-            console.log('(400, Invalid format) Server:post /get ' + req.ip + ' ' + JSON.stringify(req.query));
-            res.status(400).send("Invalid format");
-        } else {
-            if (!(elastic.addDocument(req.query.happystatus))) {
-                console.log('(Failed to store) Server:get /happy ' + req.ip + ' ' + JSON.stringify(req.query));
-                res.status(500).send("Failed to store happy status");
-            } else {
-                console.log('(Stored) Server:get /happy ' + req.ip + ' ' + JSON.stringify(req.query));
-                res.status(200).send("Happy status stored successfully");
-            }
-        }
-    }      
-});
-
 
 // A bit of error response on most used urls
 app.get("/", function(req, res) {
@@ -83,7 +59,6 @@ app.post("/", function(req, res) {
 app.listen(port);
 
 console.log("Server is ready and listening on port " + port);
-
 
 /* Normalize a port into a number, string, or false */
 
@@ -101,4 +76,33 @@ function normalizePort(val) {
     }
 
     return false;
+}
+
+function processTags(tagString) {
+
+ var minTagLength = 3;
+ var tagsToStore = [];
+ 
+ var lowerTags = tagString.toLowerCase();
+ var tagsSplit = lowerTags.split(" ");
+ 
+ console.log('Processing tags: ' + tagString);   
+ tagsSplit.forEach( function (arrayItem)
+ {
+    var testPatteren = new RegExp("^[a-zA-Z0-9]+$");
+  
+    if (testPatteren.test(arrayItem)) {
+        if (arrayItem.length >= minTagLength) {
+        tagsToStore.push(arrayItem);  
+        } else {
+        console.log('Discarding tag: ' + arrayItem + ' (too short)');  
+        }  
+    } else {
+        console.log('Discarding tag: ' + arrayItem + ' (illegal chars)');
+    }
+ });
+    
+ console.log('Tags that will be stored: ' +tagsToStore);
+ return tagsToStore;
+     
 }

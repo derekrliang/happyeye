@@ -16,13 +16,14 @@ function indexExists() {
 exports.indexExists = indexExists;  
 
 /* Add new document to index */
-function addDocument(happystatus) {  
+function addDocument(happystatus,tags) {  
     return elasticClient.index({
         index: indexName,
         type: "happymeter",
         body: {
             happystatus: happystatus,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            tags: tags
         }
     });
 }
