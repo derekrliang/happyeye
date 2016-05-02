@@ -10,7 +10,8 @@ General architecture
 * Happiness storage: Elasticsearch
 
 Document format
-* {happystatus: 'average'|'below'|'above'}  
+* {happystatus: 'average'|'below'|'above', tags: '<string>'}
+* Minimum length for tags a 3 chars, tags can only be alphanumerics, illegal tags will be discarded, all tags will be converted to lower case.
 
 Deployment
 * Alter and then source 'local_env'
