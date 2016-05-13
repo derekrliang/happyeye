@@ -1,0 +1,3 @@
+server.port: 5601
+elasticsearch.url: 'http://elastic:9200'
+server.basePath: "/kibana"
