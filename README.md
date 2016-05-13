@@ -4,18 +4,19 @@ A simple happymeeter solution which should capture information about employee ha
 Work has just started - we will evolve with the demand :)
 
 General architecture
-* Happiness submitters frontend: Anything that can post a form/JSON to a web service. We provide a static html file/interface
+* Happiness submitters frontend: Anything that can post a form to a web service. We provide a static html file/interface
 * Middleware: A web service accepting request storing these into a elasticsearch database
 * Happiness reviewers frontend: Kibana
 * Happiness storage: Elasticsearch
 
 Document format
-* {happystatus: 'average'|'below'|'above', tags: '<string>'}
+* happystatus: 'average'|'below'|'above', tags: '<string>'
 * Minimum length for tags a 3 chars, tags can only be alphanumerics, illegal tags will be discarded, all tags will be converted to lower case.
 
 Deployment
-* Alter and then source 'local_env'
-* docker-compose start
+* Alter and then source 'docker-compose_env'
+* Verify config files for kibana and nginx (happysensor/conf). The default values will often be enough.
+* docker-compose up
 * execute "elasticsearch/elastic_setup.sh" to create index and mapping
 
 #### middleware: happyeyeserver ####
