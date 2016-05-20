@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 
@@ -12,8 +16,6 @@
 <!-- Latest compiled JavaScript -->
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 <script>
@@ -118,12 +120,12 @@ function fade_click(item){
 	<div class="panel-heading text-center"><h4>Employee happiness sensor</h4></div>
 	<div class="panel-body">
 		<div class="row">
-			  <div class="col-xs-4 text-center"><img src="above.png" class="img-circle" id="above_click" alt="above_click" width="50%" height="50%"></div>
-			  <div class="col-xs-4 text-center"><img src="average.png" class="img-circle" id="average_click" alt="above_click" width="50%" height="50%"></div>
-			  <div class="col-xs-4 text-center"><img src="below.png" class="img-circle" id="below_click" alt="below_click" width="50%" height="50%"></div>				  
+			  <div class="col-sm-4"><img src="above.png" class="img-responsive img-circle center-block" id="above_click" alt="above_click" width="40%" height="40%"></div>
+			  <div class="col-sm-4"><img src="average.png" class="img-responsive img-circle center-block" id="average_click" alt="above_click" width="40%" height="40%"></div>
+			  <div class="col-sm-4"><img src="below.png" class="img-responsive img-circle center-block" id="below_click" alt="below_click" width="40%" height="40%"></div>				  
 		</div><!-- grid (row) of smile -->			
 		<div class="row">
-			<div class="col-xs-12">
+			<div class="col-sm-12">
 				<div class="form-group">
 					<form id="tags_form">
   						<label for="tags">Tags:</label>
@@ -133,8 +135,11 @@ function fade_click(item){
 			</div>
 	   </div> <!-- tag field -->	
 	</div><!-- panel body -->
-	
 	</div><!-- panel default -->
+
+	<div class="row">
+	<div class="col-sm-12">
+
 	<div id="click_status"></div>
 	<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#info">More information</button>
 	<div id="info" class="collapse">
@@ -162,6 +167,7 @@ function fade_click(item){
 			</div>
 		</div>
 	</div><!-- collapse -->
+	</div></div><!-- row and column for button and text -->
 </div><!-- container -->
  
   
