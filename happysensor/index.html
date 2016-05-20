@@ -10,11 +10,11 @@
 
 
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
 
 <!-- Latest compiled JavaScript -->
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 
 
@@ -109,20 +109,28 @@ function fade_click(item){
   $(item).fadeOut(50);
   $(item).fadeIn(50);  
 }
+
 </script>
+
+<style>
+<!-- Define my own col-xsl class to use. Need this for iPhone landscape hack. Min width for col-sm in bootstrap is >=768 - e.g. iPhone 6 landscape is 667, thus the default col-sm will always show one row for small devices. --> 
+@media only screen and (min-width: 567px) and (max-width: 736px) {
+    .col-xsl-4{ width: 30%; }
+}
+</style>
 
 </head>
 <body>
 
-<div class="container">
+<div class="container-fluid">
 	
 	<div class="panel panel-default">
 	<div class="panel-heading text-center"><h4>Employee happiness sensor</h4></div>
 	<div class="panel-body">
 		<div class="row">
-			  <div class="col-sm-4"><img src="above.png" class="img-responsive img-circle center-block" id="above_click" alt="above_click" width="40%" height="40%"></div>
-			  <div class="col-sm-4"><img src="average.png" class="img-responsive img-circle center-block" id="average_click" alt="above_click" width="40%" height="40%"></div>
-			  <div class="col-sm-4"><img src="below.png" class="img-responsive img-circle center-block" id="below_click" alt="below_click" width="40%" height="40%"></div>				  
+			  <div class="col-xs-12 col-xsl-4 col-sm-4"><img src="above.png" class="img-responsive img-circle center-block" id="above_click" alt="above_click" width="40%" height="40%"></div>
+			  <div class="col-xs-12 col-xsl-4 col-sm-4"><img src="average.png" class="img-responsive img-circle center-block" id="average_click" alt="above_click" width="40%" height="40%"></div>
+			  <div class="col-xs-12 col-xsl-4 col-sm-4"><img src="below.png" class="img-responsive img-circle center-block" id="below_click" alt="below_click" width="40%" height="40%"></div>				  
 		</div><!-- grid (row) of smile -->			
 		<div class="row">
 			<div class="col-sm-12">
