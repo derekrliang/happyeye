@@ -1,9 +1,10 @@
 version: '2'
 services: 
  elastic:
-  image: elasticsearch
+  build: ./elasticsearch/.
   volumes:
    - $ELASTICDATA:/usr/share/elasticsearch/data
+   - $ELASTICBACKUP:/usr/share/elasticsearch/backup
   ports:
    - 9200:9200
    - 9300:9300

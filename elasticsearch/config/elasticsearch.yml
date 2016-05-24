@@ -1,0 +1,11 @@
+network: 
+   host: 0.0.0.0
+
+path:
+   data: /usr/share/elasticsearch/data
+   repo: /usr/share/elasticsearch/backup
+cluster:
+   name: happycluster
+
+node:
+   name: ${HOSTNAME}

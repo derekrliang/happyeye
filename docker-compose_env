@@ -1,3 +1,4 @@
-# Phone home address to happyserver, source prior to using docker-compose
+# Important environ vars for Docker Copose to work
 export HAPPYSERVERURL=localhost
 export ELASTICDATA="/data"
+export ELASTICBACKUP="/data/backup"
