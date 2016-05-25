@@ -32,7 +32,7 @@ services:
    - ELASTICSEARCH_URL=http://elastic:9200
   ports:
    - 5601:5601
+  restart: always
   links:
    - elastic:elastic
-   restart: always
 
