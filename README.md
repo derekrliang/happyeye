@@ -14,8 +14,8 @@ Document format
 * Minimum length for tags a 3 chars, tags can only be alphanumerics, illegal tags will be discarded, all tags will be converted to lower case.
 
 API
-* Http post on /happy with two params (happystatus:<above|average|below>,tags:<string with tags>)
-* Http get on /api/storemoodandtag/<above|average|below>/<string with tags>  (Example /api/storemoodandtag/above/ilovecoding)
+* Http post on /happy with two params (happystatus:(above|average|below),tags:(string with tags))
+* Http get on /api/storemoodandtag/(above|average|below)/(string with tags)  (Example /api/storemoodandtag/above/ilovecoding)
 
 Deployment
 * Alter and then source 'docker-compose_env'
