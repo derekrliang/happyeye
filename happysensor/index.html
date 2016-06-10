@@ -125,7 +125,7 @@ function fade_click(item){
 <div class="container-fluid">
 	
 	<div class="panel panel-default">
-	<div class="panel-heading text-center"><h4>Employee happiness sensor</h4></div>
+	<div class="panel-heading text-center"><h4>Happiness sensor</h4></div>
 	<div class="panel-body">
 		<div class="row">
 			  <div class="col-xs-12 col-xsl-4 col-sm-4"><img src="above.png" class="img-responsive img-circle center-block" id="above_click" alt="above_click" width="40%" height="40%"></div>
@@ -154,7 +154,7 @@ function fade_click(item){
 		<div class="panel panel-success">
 		<div class="panel-heading"><h5>Information</h5></div>
 			<div class="panel-body">
-			 <b>This is the employee happiness sensor</b><p>
+			 <b>This is the happiness sensor</b><p>
 			 You submit a feedback document logging happiness status, average, above average and below average.
 			 Submitting happiness feedback is "anonymous". We do not log any personal information, neither any cookies with information.</p>         
 			 <b>Tags</b><p>
@@ -164,10 +164,13 @@ function fade_click(item){
 			 You can submit feedback as often as you want, but twice a day is perhaps enough.
 			 We have no throttling mechanism avoiding anyone from hammering the system with feedback.</p>
 			 <b>API</b><p>
-			Submitting from other systems are available using a http post to <code>url/happy</code>.
+			<li>http post to <code>url/happy</code>.
 			Set http header to include <code>Content-Type:application/x-www-form-urlencoded</code>.
 			Form fields are <code>happystatus</code> with values <code>'average'|'below'|'above'</code> and <code>tags</code> containing a string of white space separated tags.
-			Tags are validated according to the following regexp <code>^[a-zA-Z0-9]+$</code>.
+			Tags are validated according to the following regexp <code>^[a-zA-Z0-9]+$</code>. </li>
+			<li> http get to <code>url/api/storemoodandtag/(above|average|below)/tag(string)</code>
+			Example /api/storemoodandtag/above/ilovecoding
+			</li>
 			Results are available to anyone (in the default setup) and exposed in Kibana at <code>url/kibana</code>
 			</p>
 			<b>Source</b><p>
