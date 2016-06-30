@@ -84,6 +84,18 @@ app.get("/api/storemoodandtag/*", function (req, res) {
 });
 
 
+// API for getting top 10 tags
+app.get("/api/tags/top10", function (req, res) {
+    console.log('Server:get /api/tags/top10/ ip:' + req.ip);
+
+    elastic.listTop10Tags(function(tagsList) {
+     console.log("/api/tags/top10/ returns " + JSON.stringify(tagsList));
+     res.status(200).send(tagsList); 
+    });
+
+});
+
+
 // A bit of error response on most used urls
 app.get("/", function (req, res) {
     console.log('Server:get / (501, Not implemented)');
