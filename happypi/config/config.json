@@ -1,0 +1,18 @@
+{
+    "Sensors": {
+        "SensorSamplingRate" : 1000,
+        "ButtonAbove": {
+            "Pin": 2 },
+        "ButtonAverage": {
+            "Pin": 3 },
+        "ButtonBelow": {
+            "Pin": 4 },
+        "Radar": {
+            "Pin": 7,
+            "TriggerDist": 30 },
+        "LightLevel": {
+            "Pin": "A0" }     
+        },          
+    "HAPPYURL": "http://localhost:/api",
+    "HAPPYTAGS": "happyp1"
+}
