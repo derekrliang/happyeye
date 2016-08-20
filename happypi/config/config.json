@@ -2,11 +2,11 @@
     "Sensors": {
         "SensorSamplingRate" : 1000,
         "ButtonAbove": {
-            "Pin": 2 },
+            "Pin": 4 },
         "ButtonAverage": {
             "Pin": 3 },
         "ButtonBelow": {
-            "Pin": 4 },
+            "Pin": 2 },
         "Radar": {
             "Pin": 7,
             "TriggerDist": 30 },
