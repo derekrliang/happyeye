@@ -1,22 +1,21 @@
+'use strict';
+/*jslint node: true */
+
+require('app-module-path').addPath(process.env.PWD + '/lib/js');
+
+
 var five = require("johnny-five");
-var hat = require("./hatworker");
-var config = require("./configger");
+var config = require("./lib/js/configger");
+var happydoc = require("./lib/js/happydocument");
+var hat = require("hatworker");
    
 var board = new five.Board({
    repl: false,
-    debug: false
+   debug: false
 });
 
 var sensorsConfig = config.get('Sensors'); 
 var lastLightLevel = 0;
-
-function happyDocument(happystatus,timestamp,tags,sensorTemp,sensorLight) {
- this.happystatus = happystatus;
- this.timestamp = timestamp;
- this.tags = tags;
- this.sensorTemp = sensorTemp;
- this.sensorLight = sensorLight;
-}
 
 board.on("ready", function() {
 
@@ -45,7 +44,7 @@ board.on("ready", function() {
 
 // Photoresisitor for light
 
-  lightLevel = new five.Sensor({
+  var lightLevel = new five.Sensor({
     pin: sensorsConfig.LightLevel.Pin,
     freq: sensorsConfig.SensorSamplingRate
    });
@@ -53,17 +52,17 @@ board.on("ready", function() {
 // Handling of key events
 
   btnAbove.on("down", function() {
-    createHappyDocument("Above", hat);   
+    happydoc.fillWithSensorValues("Above", lightLevel);
+    //Send happy document?   
   });
 
    btnBelow.on("press", function() {
-    createHappyDocument("Below", hat); 
+    happydoc.fillWithSensorValues("Below", lightLevel); 
   });
 
   btnAverage.on("press", function() {
-    createHappyDocument("Average", hat); 
+    happydoc.fillWithSensorValues("Average", lightLevel); 
   });
-
 
  // Handling proximity radar
 
@@ -82,25 +81,3 @@ board.on("ready", function() {
   });
 
 });
-
-
-function createHappyDocument(happyStatus,hatworker) {
-  var happy = new happyDocument;
-
-  happy.happystatus = happyStatus;
-  happy.timestamp = Date.now();
-  happy.tags = config.get('HAPPYTAGS');
-
-  hatworker.readSensors(function callback(sensorValues) {
-    if (sensorValues) {
-      var sensorData = JSON.parse(sensorValues);
-    }
-
-    happy.sensorTemp = sensorData.temp;
-    happy.sensorLight = lastLightLevel;
-
-    hatworker.showHat("smile");
-    console.log(happy);
-  });
-}
-

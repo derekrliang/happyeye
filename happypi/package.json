@@ -10,8 +10,19 @@
   "author": "Lars Kåre Skjørestad",
   "license": "ISC",
   "dependencies": {
+    "app-module-path": "^1.1.0",
     "johnny-five": "^0.10.0",
     "nconf": "^0.8.4",
     "python-shell": "^0.4.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-mocha-test": "^0.12.7",
+    "jshint": "^2.9.3",
+    "mocha": "^3.0.2",
+    "sinon": "^1.17.5"
   }
 }
