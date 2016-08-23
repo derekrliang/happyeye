@@ -102,7 +102,6 @@ function fillAndSend(happyStatus, happy,lastLightLevel) {
     if (happy.sensorTemp) {
 		happy.sendToHappymeter(function callback(responseCode) {
 		  if (responseCode === 200) {
-			  debugger;
 			switch  (happyStatus) {
 			   case "above":
 				 hat.showHat("above");
@@ -122,5 +121,5 @@ function fillAndSend(happyStatus, happy,lastLightLevel) {
 		  }
 	});
    }
-};
+}
 	

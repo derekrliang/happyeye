@@ -10,13 +10,13 @@ function showHat(image) {
       var pyshellSmile = new PythonShell('./lib/py/sense-hat-showSmile.py');
       break;
     case "above":
-      var pyshellSmile = new PythonShell('./lib/py/sense-hat-showSmile.py');
+      var pyshellAbove = new PythonShell('./lib/py/sense-hat-showSmile.py');
       break;
 	case "average":
-      var pyshellSmile = new PythonShell('./lib/py/sense-hat-showAverage.py');
+      var pyshellAverage = new PythonShell('./lib/py/sense-hat-showAverage.py');
       break;
 	case "below":
-      var pyshellSmile = new PythonShell('./lib/py/sense-hat-showBelow.py');
+      var pyshellBelow = new PythonShell('./lib/py/sense-hat-showBelow.py');
       break;                
     case "stop":
       var pyshellStop = new PythonShell('./lib/py/sense-hat-showStop.py');

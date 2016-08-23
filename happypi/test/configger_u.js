@@ -32,7 +32,8 @@ describe('configger', function () {
         expect(sensors.ButtonAverage).to.have.property('Pin');
         expect(sensors.ButtonAverage.Pin).to.be.a('number');
 
-        expect(conf.get('HAPPYURL')).not.to.be.empty;
+        expect(conf.get('HAPPYMETERHOST')).not.to.be.empty;
+        expect(conf.get('HAPPYMETERPATH')).not.to.be.empty;
         expect(conf.get('HAPPYTAGS')).not.to.be.empty;
 
     });
