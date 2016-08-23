@@ -5,9 +5,9 @@
 require('app-module-path').addPath(process.env.PWD + '/lib/js');
 
 var chai = require("chai"),
-   expect = chai.expect,
-   sinon = require("sinon"),
-   should = chai.should();
+  expect = chai.expect,
+  sinon = require("sinon"),
+  should = chai.should();
 
 chai.should();
 
@@ -15,54 +15,70 @@ var config = require("configger");
 
 describe('happydocument', function() {
   var happydoc = require("happydocument");
-  
- 
-    it('should create a happy document with correct properties', function() {
-      var happy = new happydoc.happyDocument();
-      
-      expect(happy).to.have.property('happystatus');   
-      expect(happy).to.have.property('timestamp');   
-      expect(happy).to.have.property('tags');
-      expect(happy).to.have.property('sensorTemp');
-      expect(happy).to.have.property('sensorLight');      
+
+
+  it('should create a happy document with correct properties', function() {
+    var happy = new happydoc.happyDocument();
+
+    expect(happy).to.have.property('happystatus');
+    expect(happy).to.have.property('timestamp');
+    expect(happy).to.have.property('tags');
+    expect(happy).to.have.property('sensorTemp');
+    expect(happy).to.have.property('sensorLight');
+  });
+
+  it('should fill a happy document with sensor values', function() {
+    var hat = require("hatworker");
+    var happy = new happydoc.happyDocument();
+
+    var fillSpy = sinon.spy(happy, 'fillWithSensorValues');
+
+    sinon.stub(hat, 'readSensors', function(callback) {
+      callback('{"temp": 101.1}');
     });
 
-   it('should fill a happy document with sensor values', function() {
-      //var hat = require("hatworker");
-      var happy = new happydoc.happyDocument();
+    happy.fillWithSensorValues('Above', 200.1);
 
-      sinon.stub(happy.fillWithSensorValues.prototype,'hat.readSensors()', function(callback) {
-        happy.hatValues('{"temp": 101.1}');
-      });
+    expect(hat.readSensors.calledOnce).to.be.true;
+    expect(fillSpy.calledOnce).to.be.true;
 
-      sinon.spy(happy.fillWithSensorValues);
+    expect(happy.happystatus).to.be.equal('Above');
+    expect(happy.timestamp).not.to.be.empty;
+    expect(happy.tags).to.be.equal(config.get('HAPPYTAGS'));
+    expect(happy.sensorTemp).to.be.equal(101.1);
+    expect(happy.sensorLight).to.be.equal(200.1);
 
-      happy.fillWithSensorValues('Above',200.1);
+    hat.readSensors.restore();
 
-      expect(happy.fillWithSensorValues.calledOnce).to.be.true;
-    
-     /* 
-      expect(hat.readSensors).to.be.called;
-      expect(hat.showHat).to.be.called;
-      expect(hat.hatValues).to.be.called;
+  });
 
-      
-      expect(happy.happystatus).to.be.equal('Above');
-      expect(happy.timestamp).not.to.be.empty;
-      expect(happy.tags).to.be.equal(config.get('HAPPYTAGS'));
-      expect(happy.sensorTemp).to.be.equal(101.1);
-      expect(happy.sensorLight).to.be.equal(200.1);
+  it('should send a happy document', function() {
+    var hat = require('hatworker');
+    var request = require('request');
+    var happy = new happydoc.happyDocument();
 
-      hat.readSensors.restore();
-      */
+    var sendSpy = sinon.spy(happy, 'sendToHappymeter');
 
+    sinon.stub(request, 'get', function(callback) {
+      callback('200');
     });
 
-  it.skip('should send a happy document', function() {
-      
+    sinon.stub(hat, 'readSensors', function(callback) {
+      callback('{"temp": 101.1}');
     });
+
+    happy.fillWithSensorValues('Above', 200.1);
+
+    happy.sendToHappymeter(function callback(responseCode) {
+      expect(responseCode).to.equal('300');
+    });
+
+    expect(sendSpy.calledOnce).to.be.true;
+    expect(request.get.calledOnce).to.be.true;
+
+    hat.readSensors.restore();
+    request.get.restore();
+
+  });
 
 });
-
-
-
