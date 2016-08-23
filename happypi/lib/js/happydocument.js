@@ -5,6 +5,7 @@ require('app-module-path').addPath(process.env.PWD + '/lib/js');
 
 var hat = require("hatworker");
 var config = require("configger");
+var request = require("request");
 
 //happyDocument constructor
 function happyDocument (happystatus,timestamp,tags,sensorTemp,sensorLight) {
@@ -19,6 +20,7 @@ exports.happyDocument = happyDocument;
 
 //Filling happyDocument with key values and triggering the function to read and fill from sensors
 happyDocument.prototype.fillWithSensorValues = function (happyStatus, lightLevel) {
+   var self = this;
 
   this.happystatus = happyStatus;
   this.timestamp = Date.now();
@@ -26,18 +28,34 @@ happyDocument.prototype.fillWithSensorValues = function (happyStatus, lightLevel
 
   this.sensorLight = lightLevel;
 
-  hat.readSensors(happyDocument.hatValues);
-
+  hat.readSensors(function(sensorValues) { 
+	  if (sensorValues) {
+		 var sensorData = JSON.parse(sensorValues);
+		 self.sensorTemp = sensorData.temp;
+	  } else {
+		self.sensorTemp = -99;
+	  }  
+  });
+ 
+ //Sending happydocument to happymeter
+ happyDocument.prototype.sendToHappymeter = function (callback) {
+	var happyHost = config.get('HAPPYMETERHOST');
+	var happyPath = config.get('HAPPYMETERPATH');
+	var happyTag = config.get('HAPPYTAGS');
+	
+	var apiPath = happyHost + happyPath + '/' + this.happystatus.toLowerCase() + '/' + happyTag;
+	
+	request(apiPath, function(error, response, body) {
+		if (!error && response.statusCode === 200) {
+		  console.log('Stored happystatus ' + apiPath);
+		} else {
+		  console.log('Unable to store happystatus' + error);
+		}
+		callback(response.statusCode);
+	});
+	
+	
+ };
+ 
 };
-
-//Filling with sensorvalues from senseHat. Primary callback for hatworker
-happyDocument.prototype.hatValues = function (sensorValues) {
-  if (sensorValues) {
-    var sensorData = JSON.parse(sensorValues);
-    this.sensorTemp = sensorData.temp;
-  } else {
-    this.sensorTemp = -99;
-  }
-};
-
 

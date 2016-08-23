@@ -1,6 +1,6 @@
 {
     "Sensors": {
-        "SensorSamplingRate" : 1000,
+        "SensorSamplingRate" : 250,
         "ButtonAbove": {
             "Pin": 4 },
         "ButtonAverage": {
@@ -9,10 +9,11 @@
             "Pin": 2 },
         "Radar": {
             "Pin": 7,
-            "TriggerDist": 30 },
+            "TriggerDist": 100 },
         "LightLevel": {
             "Pin": "A0" }     
         },          
-    "HAPPYURL": "http://localhost:/api",
+    "HAPPYMETERHOST": "http://www.happymeter.no",
+    "HAPPYMETERPATH": "/api/storemoodandtag",
     "HAPPYTAGS": "happyp1"
 }

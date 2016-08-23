@@ -7,13 +7,22 @@ function showHat(image) {
 
   switch (image) {
     case "smile":
-      var pyshellSmile = new PythonShell('./lib/sense-hat-showSmile.py');
+      var pyshellSmile = new PythonShell('./lib/py/sense-hat-showSmile.py');
       break;
+    case "above":
+      var pyshellSmile = new PythonShell('./lib/py/sense-hat-showSmile.py');
+      break;
+	case "average":
+      var pyshellSmile = new PythonShell('./lib/py/sense-hat-showAverage.py');
+      break;
+	case "below":
+      var pyshellSmile = new PythonShell('./lib/py/sense-hat-showBelow.py');
+      break;                
     case "stop":
-      var pyshellStop = new PythonShell('./lib/sense-hat-showStop.py');
+      var pyshellStop = new PythonShell('./lib/py/sense-hat-showStop.py');
       break;
     case "clear":
-      var pyshellClear = new PythonShell('./lib/sense-hat-clear.py');
+      var pyshellClear = new PythonShell('./lib/py/sense-hat-clear.py');
       break;
     default:
   }
@@ -26,14 +35,6 @@ function readSensors(callback) {
    pyshell.on('message', function (message) {
      callback(message);
    });
-
-   pyshell.end(function (err) {
-     if (err) {
-       callback('{"temp": "-99"}');
-     } else {
-       callback('{"error": "false"}');
-     }
-   });
-
+  
  }
  exports.readSensors = readSensors;

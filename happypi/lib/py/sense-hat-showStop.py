@@ -21,4 +21,4 @@ O, X, X, X, X, X, X, O
 
 
 sense.set_pixels(question_mark)
-time.sleep(1)
+#time.sleep(1)
