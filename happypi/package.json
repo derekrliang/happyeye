@@ -21,6 +21,7 @@
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
+    "grunt-jsbeautifier": "^0.2.13",
     "grunt-mocha-test": "^0.12.7",
     "jshint": "^2.9.3",
     "mocha": "^3.0.2",

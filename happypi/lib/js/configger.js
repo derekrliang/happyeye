@@ -7,6 +7,8 @@ var configger = require('nconf');
 
 configger.argv();
 configger.env();
-configger.file({file: './config/config.json'});
+configger.file({
+    file: './config/config.json'
+});
 
 module.exports = configger;

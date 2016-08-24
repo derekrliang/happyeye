@@ -5,8 +5,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks("grunt-jsbeautifier");
 
     grunt.initConfig({
+        jsbeautifier: {
+            files: ['*.js', 'test/**/*.js', 'lib/**/*.js'],
+            options: {}
+        },
         mochaTest: {
             test: {
                 options: {
@@ -17,8 +22,8 @@ module.exports = function(grunt) {
         },
         watch: {
             scripts: {
-                files: ['*.js','test/**/*.js','lib/**/*.js'],
-                tasks: ['jshint','mochaTest']
+                files: ['*.js', 'test/**/*.js', 'lib/**/*.js'],
+                tasks: ['jsbeautifier', 'jshint', 'mochaTest']
             }
         },
         jshint: {
@@ -37,12 +42,14 @@ module.exports = function(grunt) {
                     "after": false,
                     "afterEach": false
                 },
-             },
-             all: ['*.js', 'lib/**/*.js', 'test/**/*.js']
-         }
+            },
+            all: ['*.js', 'lib/**/*.js', 'test/**/*.js']
+        }
     });
 
-grunt.registerTask('default','watch');
-grunt.registerTask('lint','jshint');
+    grunt.registerTask('default', 'watch');
+    grunt.registerTask('lint', 'jshint');
+    grunt.registerTask('test', 'mochaTest');
+    grunt.registerTask('beautify', 'jsbeautifier');
 
 };
