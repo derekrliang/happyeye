@@ -7,14 +7,23 @@ require('app-module-path').addPath(process.env.PWD + '/lib/js');
 var chai = require("chai"),
   expect = chai.expect,
   sinon = require("sinon"),
-  should = chai.should();
+  should = chai.should(),
+  proxyquire = require('proxyquire');
 
 chai.should();
 
 var config = require("configger");
 
 describe('happydocument', function() {
-  var happydoc = require("happydocument");
+  //var happydoc = require("happydocument");
+  var request, happydoc;
+
+  before(function() {
+    request = sinon.stub();
+    happydoc = proxyquire("happydocument", {
+      'request': request
+    });
+  });
 
 
   it('should create a happy document with correct properties', function() {
@@ -37,7 +46,9 @@ describe('happydocument', function() {
       callback('{"temp": 101.1}');
     });
 
-    happy.fillWithSensorValues('Above', 200.1);
+    happy.fillWithSensorValues('Above', 200.1, function callback() {
+      //
+    });
 
     expect(hat.readSensors.calledOnce).to.be.true;
     expect(fillSpy.calledOnce).to.be.true;
@@ -54,30 +65,32 @@ describe('happydocument', function() {
 
   it('should send a happy document', function() {
     var hat = require('hatworker');
-    var request = require('request');
     var happy = new happydoc.happyDocument();
 
+    var fillSpy = sinon.spy(happy, 'fillWithSensorValues');
     var sendSpy = sinon.spy(happy, 'sendToHappymeter');
-
-    sinon.stub(request, 'get', function(callback) {
-      callback('200');
-    });
 
     sinon.stub(hat, 'readSensors', function(callback) {
       callback('{"temp": 101.1}');
     });
 
-    happy.fillWithSensorValues('Above', 200.1);
+    request.yields(null, {
+      "statusCode": 200
+    }, null);
 
-    happy.sendToHappymeter(function callback(responseCode) {
-      expect(responseCode).to.equal('300');
+    happy.fillWithSensorValues('Above', 200.1, function callback() {
+      // check sensor values?
     });
 
+    happy.sendToHappymeter(function callback(responseCode) {
+      expect(responseCode).to.equal(200);
+    });
+
+    expect(happy.sendToHappymeter.calledOnce).to.be.true;
+    expect(fillSpy.calledOnce).to.be.true;
     expect(sendSpy.calledOnce).to.be.true;
-    expect(request.get.calledOnce).to.be.true;
 
     hat.readSensors.restore();
-    request.get.restore();
 
   });
 

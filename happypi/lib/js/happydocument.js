@@ -46,7 +46,7 @@ happyDocument.prototype.fillWithSensorValues = function(happyStatus, lightLevel,
 
 		var apiPath = happyHost + happyPath + '/' + this.happystatus.toLowerCase() + '/' + happyTag;
 
-		request.get(apiPath, function(error, response, body) {
+		request(apiPath, function(error, response, body) {
 			if (!error && response.statusCode === 200) {
 				console.log('Stored happystatus ' + apiPath);
 			} else {

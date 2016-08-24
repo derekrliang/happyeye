@@ -11,10 +11,10 @@ var chai = require("chai"),
 
 chai.should();
 
-describe('configger', function () {
+describe('configger', function() {
     var conf = require("configger");
 
-    it('should contain key config', function () {
+    it('should read key config', function() {
         var sensors = conf.get('Sensors');
 
         expect(sensors).to.have.property('SensorSamplingRate');
@@ -39,5 +39,3 @@ describe('configger', function () {
     });
 
 });
-
-
