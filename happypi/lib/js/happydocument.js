@@ -19,7 +19,7 @@ function happyDocument(happystatus, timestamp, tags, sensorTemp, sensorLight) {
 exports.happyDocument = happyDocument;
 
 //Filling happyDocument with key values and triggering the function to read and fill from sensors
-happyDocument.prototype.fillWithSensorValues = function(happyStatus, lightLevel) {
+happyDocument.prototype.fillWithSensorValues = function(happyStatus, lightLevel, callback) {
 	var self = this;
 	
 	this.happystatus = happyStatus;
@@ -35,6 +35,7 @@ happyDocument.prototype.fillWithSensorValues = function(happyStatus, lightLevel)
 		} else {
 			self.sensorTemp = -99;
 		}
+		callback();
 	});
 
 	//Sending happydocument to happymeter

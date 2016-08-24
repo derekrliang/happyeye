@@ -101,27 +101,30 @@ board.on("ready", function() {
 
 function fillAndSend(happyStatus, happy, lastLightLevel) {
   hat.showHat("clear");
-  happy.fillWithSensorValues(happyStatus, lastLightLevel);
-  if (happy.sensorTemp) {
-    happy.sendToHappymeter(function callback(responseCode) {
-      if (responseCode === 200) {
-        switch (happyStatus) {
-          case "above":
-            hat.showHat("above");
-            break;
-          case "below":
-            hat.showHat("below");
-            break;
-          case "average":
-            hat.showHat("average");
-            break;
-          default:
-            hat.showHat("clear");
-            break;
+  happy.fillWithSensorValues(happyStatus, lastLightLevel, function callback() {
+
+    if (happy.sensorTemp) {
+      happy.sendToHappymeter(function callback(responseCode) {
+        if (responseCode === 200) {
+          switch (happyStatus) {
+            case "above":
+              hat.showHat("above");
+              break;
+            case "below":
+              hat.showHat("below");
+              break;
+            case "average":
+              hat.showHat("average");
+              break;
+            default:
+              hat.showHat("clear");
+              break;
+          }
+        } else {
+          hat.show("stop");
         }
-      } else {
-        hat.show("stop");
-      }
-    });
-  }
+      });
+    }
+
+  });
 }
