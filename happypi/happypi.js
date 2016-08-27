@@ -15,13 +15,22 @@ var board = new five.Board({
 });
 
 var sensorsConfig = config.get('Sensors');
+
+function sensorValues(temperature, relativeHumidity, barometricPressure, lightLevel) {
+    /*jshint validthis:true */
+    this.temperature = temperature;
+    this.relativeHumidity = relativeHumidity;
+    this.barometricPressure = barometricPressure;
+    this.lightLevel = lightLevel;
+}
+
 var lastLightLevel = 0;
 
 board.on("ready", function() {
     var happy = new happydoc.happyDocument();
     var showRadarOn = false; // Toggle for handling the radar info on the sensehat pixels
     var showRadarOff = false; // Toggle for handling the radar info on the sensehat pixels
-
+    var sensors = new sensorValues(0,0,0,0);
 
     console.log("Board ready");
 
@@ -33,6 +42,29 @@ board.on("ready", function() {
         freq: sensorsConfig.SensorSamplingRate,
         pin: sensorsConfig.Radar.Pin
     });
+
+    var temperature = new five.Thermometer({
+        controller: "BME280",
+        freq: sensorsConfig.SensorSamplingRate,
+        address: 0x76
+     });
+
+    var relativeHumidity = new five.Hygrometer({
+        controller: "BME280",
+        freq: sensorsConfig.SensorSamplingRate,
+        address: 0x76
+     });
+
+    var barometricPressure = new five.Barometer({
+        controller: "BME280",
+        freq: sensorsConfig.SensorSamplingRate,
+        address: 0x76
+    });
+
+// Not there yet
+//    var lux = new five.Light({
+//         controller: "TSL2561"
+//     });
 
     // Buttons
     var btnAbove = new five.Button({
@@ -60,15 +92,15 @@ board.on("ready", function() {
     // Handling of key events
 
     btnAbove.on("down", function() {
-        fillAndSend("above", happy, lastLightLevel);
+        fillAndSend("above", happy, sensors);
     });
 
     btnBelow.on("press", function() {
-        fillAndSend("below", happy, lastLightLevel);
+        fillAndSend("below", happy, sensors);
     });
 
     btnAverage.on("press", function() {
-        fillAndSend("average", happy, lastLightLevel);
+        fillAndSend("average", happy, sensors);
     });
 
     // Handling proximity radar
@@ -91,16 +123,44 @@ board.on("ready", function() {
 
     });
 
-
     //Gather light level and store in global
     lightLevel.on("data", function() {
-        lastLightLevel = +this.value;
+        sensors.lightLevel = this.value;
+    });
+
+    // lux.on("data", function() {
+    //     console.log('Ambient light level ' + this.level);
+    // });
+
+    temperature.on("data", function() {
+        //console.log(this.celsius + "C");
+        sensors.temperature = this.celsius;
+    });
+
+    relativeHumidity.on("data", function() {
+        //console.log(this.relativeHumidity + "%");
+        sensors.relativeHumidity = this.relativeHumidity;
+    });
+
+    barometricPressure.on("data", function() {
+        //console.log(this.pressure + "kPa");
+        sensors.barometricPressure = this.pressure;
     });
 
 });
 
-function fillAndSend(happyStatus, happy, lastLightLevel) {
+function fillAndSend(happyStatus, happy, sensors) {
     hat.showHat("clear");
+    var sensorsSample = new sensorValues();
+    
+    sensorsSample.temperature = sensors.temperature;
+    sensorsSample.relativeHumidity = sensors.relativeHumidity;
+    sensorsSample.barometricPressure = sensors.barometricPressure;
+    sensorsSample.lightLevel = sensors.lightLevel;
+
+    //Time to refactor an use new sensor values :) ----
+    
+    
     happy.fillWithSensorValues(happyStatus, lastLightLevel, function callback() {
 
         if (happy.sensorTemp) {
