@@ -14,6 +14,6 @@
             "Pin": "A0" }     
         },          
     "HAPPYMETERHOST": "http://www.happymeter.no",
-    "HAPPYMETERPATH": "/api/storemoodandtag",
+    "HAPPYAPI": "/api/storehappydocument",
     "HAPPYTAGS": "happyp1"
 }

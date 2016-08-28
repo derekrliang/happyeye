@@ -16,21 +16,11 @@ var board = new five.Board({
 
 var sensorsConfig = config.get('Sensors');
 
-function sensorValues(temperature, relativeHumidity, barometricPressure, lightLevel) {
-    /*jshint validthis:true */
-    this.temperature = temperature;
-    this.relativeHumidity = relativeHumidity;
-    this.barometricPressure = barometricPressure;
-    this.lightLevel = lightLevel;
-}
-
-var lastLightLevel = 0;
-
 board.on("ready", function() {
     var happy = new happydoc.happyDocument();
     var showRadarOn = false; // Toggle for handling the radar info on the sensehat pixels
     var showRadarOff = false; // Toggle for handling the radar info on the sensehat pixels
-    var sensors = new sensorValues(0,0,0,0);
+    var sensors = new happydoc.sensorValues();
 
     console.log("Board ready");
 
@@ -47,13 +37,13 @@ board.on("ready", function() {
         controller: "BME280",
         freq: sensorsConfig.SensorSamplingRate,
         address: 0x76
-     });
+    });
 
     var relativeHumidity = new five.Hygrometer({
         controller: "BME280",
         freq: sensorsConfig.SensorSamplingRate,
         address: 0x76
-     });
+    });
 
     var barometricPressure = new five.Barometer({
         controller: "BME280",
@@ -61,10 +51,10 @@ board.on("ready", function() {
         address: 0x76
     });
 
-// Not there yet
-//    var lux = new five.Light({
-//         controller: "TSL2561"
-//     });
+    // Not there yet
+    //    var lux = new five.Light({
+    //         controller: "TSL2561"
+    //     });
 
     // Buttons
     var btnAbove = new five.Button({
@@ -151,40 +141,31 @@ board.on("ready", function() {
 
 function fillAndSend(happyStatus, happy, sensors) {
     hat.showHat("clear");
-    var sensorsSample = new sensorValues();
-    
-    sensorsSample.temperature = sensors.temperature;
-    sensorsSample.relativeHumidity = sensors.relativeHumidity;
-    sensorsSample.barometricPressure = sensors.barometricPressure;
-    sensorsSample.lightLevel = sensors.lightLevel;
 
-    //Time to refactor an use new sensor values :) ----
-    
-    
-    happy.fillWithSensorValues(happyStatus, lastLightLevel, function callback() {
+    happy.sensorValues = sensors;
 
-        if (happy.sensorTemp) {
-            happy.sendToHappymeter(function callback(responseCode) {
-                if (responseCode === 200) {
-                    switch (happyStatus) {
-                        case "above":
-                            hat.showHat("above");
-                            break;
-                        case "below":
-                            hat.showHat("below");
-                            break;
-                        case "average":
-                            hat.showHat("average");
-                            break;
-                        default:
-                            hat.showHat("clear");
-                            break;
-                    }
-                } else {
-                    hat.show("stop");
+    if (sensors.temperature) { //This will have to be different - we can send with empty sensor values?
+        happy.sendToHappymeter(function callback(responseCode) {
+            if (responseCode === 200) {
+                switch (happyStatus) {
+                    case "above":
+                        hat.showHat("above");
+                        break;
+                    case "below":
+                        hat.showHat("below");
+                        break;
+                    case "average":
+                        hat.showHat("average");
+                        break;
+                    default:
+                        hat.showHat("clear");
+                        break;
                 }
-            });
-        }
+            } else {
+                hat.show("stop");
+            }
+        });
+    }
 
-    });
+
 }
