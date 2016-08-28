@@ -26,8 +26,12 @@ happyDocument.prototype.sendToHappymeter = function(callback) {
     var happyTag = config.get('HAPPYTAGS');
 
     var apiPath = happyHost + happyApiPath;
+
+    this.tags = happyTag;
+    this.timestamp = Date.now();
+
     request.post(apiPath, {
-        form: happyDocument
+        form: this
     }, function(error, response, body) {
         if (!error && response.statusCode === 200) {
             console.log('Stored happystatus ' + apiPath);

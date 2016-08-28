@@ -16,13 +16,25 @@ var board = new five.Board({
 
 var sensorsConfig = config.get('Sensors');
 
+//Making vars for sensors that we will send globals 
+var temperature, relativeHumidity, barometricPressure, lightLevel;
+
+//
+var idleHandler, iAmIdle = false;
+
 board.on("ready", function() {
     var happy = new happydoc.happyDocument();
     var showRadarOn = false; // Toggle for handling the radar info on the sensehat pixels
     var showRadarOff = false; // Toggle for handling the radar info on the sensehat pixels
-    var sensors = new happydoc.sensorValues();
+
+    //Some logics to handle the event that the buttons fire on auto one time when the board is init
+    var btnAboveFirstFired = false;
+    var btnAverageFirstFired = false;
+    var btnBelowFirstFired = false;
 
     console.log("Board ready");
+
+    setIdleTimer(true);
 
     // Defining sensors
     // Proximity sensor (Remember pingfirmata)
@@ -33,19 +45,19 @@ board.on("ready", function() {
         pin: sensorsConfig.Radar.Pin
     });
 
-    var temperature = new five.Thermometer({
+    temperature = new five.Thermometer({
         controller: "BME280",
         freq: sensorsConfig.SensorSamplingRate,
         address: 0x76
     });
 
-    var relativeHumidity = new five.Hygrometer({
+    relativeHumidity = new five.Hygrometer({
         controller: "BME280",
         freq: sensorsConfig.SensorSamplingRate,
         address: 0x76
     });
 
-    var barometricPressure = new five.Barometer({
+    barometricPressure = new five.Barometer({
         controller: "BME280",
         freq: sensorsConfig.SensorSamplingRate,
         address: 0x76
@@ -74,7 +86,7 @@ board.on("ready", function() {
 
     // Photoresisitor for light
 
-    var lightLevel = new five.Sensor({
+    lightLevel = new five.Sensor({
         pin: sensorsConfig.LightLevel.Pin,
         freq: sensorsConfig.SensorSamplingRate
     });
@@ -82,24 +94,41 @@ board.on("ready", function() {
     // Handling of key events
 
     btnAbove.on("down", function() {
-        fillAndSend("above", happy, sensors);
+        if (btnAboveFirstFired) {
+            fillAndSend("above", happy);
+            setIdleTimer(false);
+        } else {
+            btnAboveFirstFired = true;
+            console.log('BtnAbove first fired');
+        }
     });
 
     btnBelow.on("press", function() {
-        fillAndSend("below", happy, sensors);
+        if (btnBelowFirstFired) {
+            fillAndSend("below", happy);
+            setIdleTimer(false);
+        } else {
+            btnBelowFirstFired = true;
+            console.log('BtnBelow first fired');
+        }
     });
 
     btnAverage.on("press", function() {
-        fillAndSend("average", happy, sensors);
+        if (btnAverageFirstFired) {
+            fillAndSend("average", happy);
+            setIdleTimer(false);    
+        } else {
+            btnAverageFirstFired = true;
+            console.log('BtnAverage first fired');
+        }
     });
 
     // Handling proximity radar
-
-
     radar.on("data", function() {
+     if (iAmIdle) {   
         if ((this.cm < sensorsConfig.Radar.TriggerDist) && (this.cm > 0)) {
             if (!showRadarOn) {
-                hat.showHat("stop");
+                hat.showHat("flag");
                 showRadarOn = true;
                 showRadarOff = false;
             }
@@ -110,62 +139,61 @@ board.on("ready", function() {
                 showRadarOn = false;
             }
         }
-
-    });
-
-    //Gather light level and store in global
-    lightLevel.on("data", function() {
-        sensors.lightLevel = this.value;
-    });
-
-    // lux.on("data", function() {
-    //     console.log('Ambient light level ' + this.level);
-    // });
-
-    temperature.on("data", function() {
-        //console.log(this.celsius + "C");
-        sensors.temperature = this.celsius;
-    });
-
-    relativeHumidity.on("data", function() {
-        //console.log(this.relativeHumidity + "%");
-        sensors.relativeHumidity = this.relativeHumidity;
-    });
-
-    barometricPressure.on("data", function() {
-        //console.log(this.pressure + "kPa");
-        sensors.barometricPressure = this.pressure;
+     }
     });
 
 });
 
+function setIdleTimer(operation) {
+
+    if (operation) {
+        idleHandler = setInterval(function() {
+           iAmIdle = true;
+        },config.get('IdleTimer'))
+    } else if (!operation) {
+        clearInterval(idleHandler);
+        iAmIdle = false;
+    }
+};
+
+
+
 function fillAndSend(happyStatus, happy, sensors) {
     hat.showHat("clear");
 
-    happy.sensorValues = sensors;
+    var sensorValues = new happydoc.sensorValues();
+    sensorValues.temperature = temperature.celsius;
+    sensorValues.relativeHumidity = relativeHumidity.relativeHumidity;
+    sensorValues.barometricPressure = barometricPressure.pressure;
+    sensorValues.lightLevel = lightLevel.value;
 
-    if (sensors.temperature) { //This will have to be different - we can send with empty sensor values?
-        happy.sendToHappymeter(function callback(responseCode) {
-            if (responseCode === 200) {
-                switch (happyStatus) {
-                    case "above":
-                        hat.showHat("above");
-                        break;
-                    case "below":
-                        hat.showHat("below");
-                        break;
-                    case "average":
-                        hat.showHat("average");
-                        break;
-                    default:
-                        hat.showHat("clear");
-                        break;
-                }
-            } else {
-                hat.show("stop");
+    happy.happystatus = happyStatus;
+    happy.sensorValues = sensorValues;
+
+    happy.sendToHappymeter(function callback(responseCode) {
+        if (responseCode === 200) {
+            switch (happyStatus) {
+                case "above":
+                    hat.showHat("above");
+                    setIdleTimer(true);
+                    break;
+                case "below":
+                    hat.showHat("below");
+                    setIdleTimer(true);
+                    break;
+                case "average":
+                    hat.showHat("average");
+                    setIdleTimer(true); 
+                    break;
+                default:
+                    hat.showHat("clear");
+                    setIdleTimer(true);  
+                    break;
             }
-        });
-    }
+        } else {
+            hat.show("stop");
+        }
+    });
 
 
 }

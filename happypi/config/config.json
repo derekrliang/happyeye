@@ -13,7 +13,8 @@
         "LightLevel": {
             "Pin": "A0" }     
         },          
-    "HAPPYMETERHOST": "http://www.happymeter.no",
-    "HAPPYAPI": "/api/storehappydocument",
-    "HAPPYTAGS": "happyp1"
+    "HAPPYMETERHOST": "www.happymeter.no",
+    "HAPPYAPI": "/happy/",
+    "HAPPYTAGS": "happyp1",
+    "IdleTimer": 10000
 }
