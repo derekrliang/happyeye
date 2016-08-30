@@ -35,10 +35,11 @@ happyDocument.prototype.sendToHappymeter = function(callback) {
     }, function(error, response, body) {
         if (!error && response.statusCode === 200) {
             console.log('Stored happystatus ' + apiPath);
+            callback(response.statusCode);
         } else {
-            console.log('Unable to store happystatus' + error);
+            console.log('Unable to store happystatus -' + response.body);
+            callback(response.body);
         }
-        callback(response.statusCode);
     });
 
 };

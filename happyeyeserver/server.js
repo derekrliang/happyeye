@@ -1,6 +1,9 @@
 var express = require("express");
 var cors = require("cors");
 var bodyParser = require('body-parser');
+var validator = require('node-validator');
+var moment = require('moment');
+
 var app = express();
 
 var elastic = require('./elasticsearch');
@@ -14,34 +17,54 @@ app.use(cors());
 //Handling request towards /happy
 // Post is expecting 'application/x-www-form-urlencoded'
 
-app.post("/happy", function (req, res) {
+app.post("/api/storehappydocument", function (req, res) {
     var tagsToStore = [];
+    var happydocument = JSON.parse(JSON.stringify(req.body));
 
-    console.log('Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
+    console.log('Got server:post /api/storehappydocument ' + req.ip + ' ' + JSON.stringify(req.body));
 
-    if (!(req.body.happystatus)) {
-        console.log('(400, Invalid format) Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
-        res.status(400).send("Invalid format");
+    //Overriding timestamp 
+    if (happydocument.timestamp === null || happydocument.timestamp === undefined) {
+        happydocument.timestamp = Date.now()
     } else {
-        if (!((req.body.happystatus === 'average') || (req.body.happystatus === 'below') || (req.body.happystatus === 'above'))) {
-            console.log('(400, Invalid format) Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
-            res.status(400).send("Invalid format");
-        } else {
+        happydocument.timestamp = Date.now()
+    };
 
-            if (req.body.tags) {
-                tagsToStore = processTags(req.body.tags);
-            }
+    //Define validation check for document
+    var check = validator.isObject()
+    .withRequired('happystatus', validator.isString({ regex: /above|average|below/ }))
+    .withRequired('timestamp', validator.isDate({format: 'x'}))
+    .withOptional('tags', validator.isString())
+    .withOptional('sensorValues',validator.isObject()
+        .withOptional('temperature', validator.isNumber({allowString: true}))
+        .withOptional('barometricPressure', validator.isNumber({allowString: true}))
+        .withOptional('relativeHumidity', validator.isNumber({allowString: true}))
+        .withOptional('lightLevel', validator.isNumber({allowString: true}))
+    );
 
-            if (!(elastic.addDocument(req.body.happystatus, tagsToStore))) {
-                console.log('(Failed to store) Server:post /happy ' + req.ip + ' ' + JSON.stringify(req.body));
+    if (happydocument.tags === null || happydocument.tags === undefined) {
+        tagsToStore = processTags(req.body.tags);
+        happydocument.tags = tagsToStore;
+        console.log('Processing tags  storing ' + happydocument.tags);
+    }
+    
+    validator.run(check, happydocument, function(errorCount, errors) {
+     
+       if (errorCount <= 0) {
+            if (!(elastic.addDocument(happydocument))) {
+                console.log('(Failed to store) Server:post /happy ' + req.ip + ' ' + JSON.stringify(happydocument));
                 res.status(500).send("Failed to store happy status");
             } else {
-                console.log('(Stored) Server:post /happy ' + req.ip + ' ' + req.body.happystatus + ' : ' + tagsToStore);
+                console.log('(Stored) Server:post /happy ' + req.ip + ' ' + JSON.stringify(happydocument));
                 res.status(200).send("Happy status stored successfully");
             }
-        }
-    }
+       } else {
+         console.log('Document failed validation ' + JSON.stringify(errors));  
+         res.status(500).send("Invalid format on document");
+       };
 
+    });
+   
 }
 );
 

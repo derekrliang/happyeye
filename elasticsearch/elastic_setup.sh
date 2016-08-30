@@ -8,18 +8,26 @@
 #
 # Define main index - happymeter
 #
-curl -XPOST localhost:9200/happymeter -d '{
-    "settings" : {
-        "number_of_shards" : 1
+curl -XPOST localhost:9200/happymeter?pretty -d '{
+    settings : {
+        number_of_shards : 1
     },
-    "mappings" : {
-        "happymeter" : {
-            "properties" : {
+    mappings : {
+        happymeter : {
+            properties : {
                 happystatus: { type: "string", index: "not_analyzed" },
                 timestamp: {type: "date"},
-                tags: {type: "string", index: "not_analyzed"}
+                tags: {type: "string", index: "not_analyzed"},
+                sensorValues : {
+                    properties: {
+                        temperature: {type: "float", index: "not_analyzed"},
+                        relativeHumidity: {type: "float", index: "not_analyzed"},
+                        barometricPressure: {type: "float", index: "not_analyzed"}, 
+                        lightLevel: {"type": "float", "index": "not_analyzed"}
+                    }
+                 }
+                }
             }
-       }
     }
 }'
 

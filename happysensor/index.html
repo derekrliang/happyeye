@@ -107,7 +107,7 @@ $(document).ready(function(){
 
 function post(status,tags) {
  console.log(status + " " + tags);	 
- $.post("http://localhost/happy/",
+ $.post("http://localhost/api/storehappydocument",
         {
           happystatus: status,
 		  tags: tags
@@ -184,12 +184,14 @@ function fade_click(item){
 			 You can submit feedback as often as you want, but twice a day is perhaps enough.
 			 We have no throttling mechanism avoiding anyone from hammering the system with feedback.</p>
 			 <b>API</b><p>
-			<li>http post to <code>url/happy</code>.
+			<li>http post to <code>url/api/storehappydocument</code>.
 			Set http header to include <code>Content-Type:application/x-www-form-urlencoded</code>.
 			Form fields are <code>happystatus</code> with values <code>'average'|'below'|'above'</code> and <code>tags</code> containing a string of white space separated tags.
-			Tags are validated according to the following regexp <code>^[a-zA-Z0-9]+$</code>. </li>
+			Tags are validated according to the following regexp <code>^[a-zA-Z0-9]+$</code>.</li>
 			<li> http get to <code>url/api/storemoodandtag/(above|average|below)/tag(string)</code>
 			Example /api/storemoodandtag/above/ilovecoding
+			</li>
+			<li> http get to <code>url/api/tags/top10</code> will respond with 10 most popular tags - off all times
 			</li>
 			Results are available to anyone (in the default setup) and exposed in Kibana at <code>url/kibana</code>
 			</p>
