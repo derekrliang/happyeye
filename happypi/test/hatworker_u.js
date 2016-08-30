@@ -15,13 +15,10 @@ var config = require("configger");
 
 describe('hatworker', function() {
     var hat = require("hatworker");
-    //var PythonShell = require('python-shell');
 
     it('should show a image', function() {
 
         sinon.spy(hat, 'showHat');
-
-        //sinon.stub(PythonShell);
 
         hat.showHat('smile');
         expect(hat.showHat.calledOnce).to.be.true;

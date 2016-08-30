@@ -30,7 +30,7 @@ happyDocument.prototype.sendToHappymeter = function(callback) {
     this.tags = happyTag;
     this.timestamp = Date.now();
 
-    request.post(apiPath, {
+    request(apiPath, {
         form: this
     }, function(error, response, body) {
         if (!error && response.statusCode === 200) {
@@ -38,9 +38,10 @@ happyDocument.prototype.sendToHappymeter = function(callback) {
             callback(response.statusCode);
         } else {
             console.log('Unable to store happystatus -' + response.body);
-            callback(response.body);
+            callback(response.statusCode);
         }
     });
+
 
 };
 

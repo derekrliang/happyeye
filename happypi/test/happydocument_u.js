@@ -48,35 +48,30 @@ describe('happydocument', function() {
 
     });
 
-    it('should send a happy document', function() {
+    it('should send a happy document - 200', function() {
         var happy = new happydoc.happyDocument();
         var sensorValues = new happydoc.sensorValues();
 
         var sendSpy = sinon.spy(happy, 'sendToHappymeter');
-        //        var happySpy = sinon.spy(happy);
 
-        // request.yields(null, {
-        //     "statusCode": 200
-        // }, null);
+        request.yields(null, {
+            "statusCode": 200
+        }, null);
 
         sensorValues = (23.1, 43.2, 120.1, 768);
 
         happy.happystatus = 'Above';
-        happy.timestamp = Date.now();
         happy.tags = "taggingIsOk";
         happy.sensorValues = sensorValues;
 
-        request.post = function() {
-            callback(200);
-        };
-
-        happy.sendToHappymeter(function callback(responseCode) {
-            expect(responseCode).to.equal(201);
-            happy.happystatus.should.equal('Above');
+        happy.sendToHappymeter(function callback(response) {
+            expect(response).to.equal(200);
         });
 
         expect(happy.sendToHappymeter.calledOnce).to.be.true;
         expect(sendSpy.calledOnce).to.be.true;
+        happy.timestamp.should.not.be.empty;
+        happy.tags.should.not.be.empty;
 
     });
 

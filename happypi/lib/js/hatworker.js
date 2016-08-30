@@ -21,9 +21,9 @@ function showHat(image) {
         case "stop":
             var pyshellStop = new PythonShell('./lib/py/sense-hat-showStop.py');
             break;
-         case "flag":
-            var pyshellStop = new PythonShell('./lib/py/sense-hat-showFlag.py');
-            break;   
+        case "flag":
+            var pyshellFlag = new PythonShell('./lib/py/sense-hat-showFlag.py');
+            break;
         case "clear":
             var pyshellClear = new PythonShell('./lib/py/sense-hat-clear.py');
             break;

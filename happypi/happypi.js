@@ -116,7 +116,7 @@ board.on("ready", function() {
     btnAverage.on("press", function() {
         if (btnAverageFirstFired) {
             fillAndSend("average", happy);
-            setIdleTimer(false);    
+            setIdleTimer(false);
         } else {
             btnAverageFirstFired = true;
             console.log('BtnAverage first fired');
@@ -125,21 +125,21 @@ board.on("ready", function() {
 
     // Handling proximity radar
     radar.on("data", function() {
-     if (iAmIdle) {   
-        if ((this.cm < sensorsConfig.Radar.TriggerDist) && (this.cm > 0)) {
-            if (!showRadarOn) {
-                hat.showHat("flag");
-                showRadarOn = true;
-                showRadarOff = false;
-            }
-        } else {
-            if (!showRadarOff) {
-                hat.showHat("clear");
-                showRadarOff = !showRadarOff;
-                showRadarOn = false;
+        if (iAmIdle) {
+            if ((this.cm < sensorsConfig.Radar.TriggerDist) && (this.cm > 0)) {
+                if (!showRadarOn) {
+                    hat.showHat("flag");
+                    showRadarOn = true;
+                    showRadarOff = false;
+                }
+            } else {
+                if (!showRadarOff) {
+                    hat.showHat("clear");
+                    showRadarOff = !showRadarOff;
+                    showRadarOn = false;
+                }
             }
         }
-     }
     });
 
 });
@@ -148,13 +148,13 @@ function setIdleTimer(operation) {
 
     if (operation) {
         idleHandler = setInterval(function() {
-           iAmIdle = true;
-        },config.get('IdleTimer'))
+            iAmIdle = true;
+        }, config.get('IdleTimer'));
     } else if (!operation) {
         clearInterval(idleHandler);
         iAmIdle = false;
     }
-};
+}
 
 
 
@@ -183,11 +183,11 @@ function fillAndSend(happyStatus, happy, sensors) {
                     break;
                 case "average":
                     hat.showHat("average");
-                    setIdleTimer(true); 
+                    setIdleTimer(true);
                     break;
                 default:
                     hat.showHat("clear");
-                    setIdleTimer(true);  
+                    setIdleTimer(true);
                     break;
             }
         } else {
