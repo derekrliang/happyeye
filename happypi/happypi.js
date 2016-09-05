@@ -191,7 +191,7 @@ function fillAndSend(happyStatus, happy, sensors) {
                     break;
             }
         } else {
-            hat.show("stop");
+            hat.showHat("stop");
         }
     });
 

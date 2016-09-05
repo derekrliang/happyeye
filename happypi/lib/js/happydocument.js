@@ -30,7 +30,7 @@ happyDocument.prototype.sendToHappymeter = function(callback) {
     this.tags = happyTag;
     this.timestamp = Date.now();
 
-    request(apiPath, {
+    request.post(apiPath, {
         form: this
     }, function(error, response, body) {
         if (!error && response.statusCode === 200) {
