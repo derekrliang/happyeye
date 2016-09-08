@@ -7,14 +7,14 @@
             "Pin": 3 },
         "ButtonBelow": {
             "Pin": 2 },
-        "Radar": {
-            "Pin": 7,
-            "TriggerDist": 100 },
+        "Motion": {
+            "Pin": 7},
         "LightLevel": {
             "Pin": "A0" }     
         },          
     "HAPPYMETERHOST": "http://localhost",
     "HAPPYAPI": "/api/storehappydocument/",
-    "HAPPYTAGS": "happyp1",
-    "IdleTimer": 10000
+    "HAPPYTAGS": "stfop1",
+    "IdleTimer": 8000,
+    "sendWhileIdleLoopTime" : 60000
 }

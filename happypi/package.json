@@ -14,7 +14,8 @@
     "johnny-five": "^0.10.0",
     "nconf": "^0.8.4",
     "python-shell": "^0.4.0",
-    "request": "^2.74.0"
+    "request": "^2.74.0",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

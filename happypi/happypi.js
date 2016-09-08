@@ -14,13 +14,21 @@ var board = new five.Board({
     debug: false
 });
 
+var winston = require('winston');
+var logger = new (winston.Logger)({
+    transports: [
+        new (winston.transports.Console)({'timestamp': true})
+    ]
+});
+
 var sensorsConfig = config.get('Sensors');
 
 //Making vars for sensors that we will send globals 
 var temperature, relativeHumidity, barometricPressure, lightLevel;
 
-//
+// Some globale vars
 var idleHandler, iAmIdle = false;
+var motionCounter = 0;
 
 board.on("ready", function() {
     var happy = new happydoc.happyDocument();
@@ -32,18 +40,20 @@ board.on("ready", function() {
     var btnAverageFirstFired = false;
     var btnBelowFirstFired = false;
 
-    console.log("Board ready");
-
+    logger.info('Board ready');
+    
+    hat.showHat("clear");
+    iAmIdle = true;
     setIdleTimer(true);
-
+    
     // Defining sensors
     // Proximity sensor (Remember pingfirmata)
 
-    var radar = new five.Proximity({
-        controller: "HCSR04",
-        freq: sensorsConfig.SensorSamplingRate,
-        pin: sensorsConfig.Radar.Pin
+    var motion = new five.Motion({
+        pin: sensorsConfig.Motion.Pin,
+        freq: sensorsConfig.SensorSamplingRate
     });
+
 
     temperature = new five.Thermometer({
         controller: "BME280",
@@ -95,58 +105,75 @@ board.on("ready", function() {
 
     btnAbove.on("down", function() {
         if (btnAboveFirstFired) {
-            fillAndSend("above", happy);
             setIdleTimer(false);
+            fillAndSend("above", happy);
         } else {
             btnAboveFirstFired = true;
-            console.log('BtnAbove first fired');
+            logger.info('BtnAbove first fired');
         }
     });
 
     btnBelow.on("press", function() {
         if (btnBelowFirstFired) {
-            fillAndSend("below", happy);
             setIdleTimer(false);
+            fillAndSend("below", happy);
         } else {
             btnBelowFirstFired = true;
-            console.log('BtnBelow first fired');
+            logger.info('BtnBelow first fired');
         }
     });
 
     btnAverage.on("press", function() {
         if (btnAverageFirstFired) {
-            fillAndSend("average", happy);
             setIdleTimer(false);
+            fillAndSend("average", happy);
         } else {
             btnAverageFirstFired = true;
-            console.log('BtnAverage first fired');
+            logger.info('BtnAverage first fired');
         }
     });
 
-    // Handling proximity radar
-    radar.on("data", function() {
-        if (iAmIdle) {
-            if ((this.cm < sensorsConfig.Radar.TriggerDist) && (this.cm > 0)) {
-                if (!showRadarOn) {
-                    hat.showHat("flag");
-                    showRadarOn = true;
-                    showRadarOff = false;
-                }
-            } else {
-                if (!showRadarOff) {
-                    hat.showHat("clear");
-                    showRadarOff = !showRadarOff;
-                    showRadarOn = false;
-                }
-            }
+    // Handling motion
+    motion.on("calibrated", function() {
+        logger.info("Motion calibrated");
+        motionCounter = 0;
+    });
+
+    motion.on("motionstart", function() {
+       motionCounter++;
+       logger.info("Motion detected (" + motionCounter + ")");
+       if (iAmIdle && !showRadarOn) {
+                hat.showHat("flag");
+                showRadarOn = true;
+                showRadarOff = false;
         }
     });
+
+    motion.on("motionend", function() {
+        logger.info("Motion end");
+        if (!showRadarOff) {
+            hat.showHat("clear");
+            showRadarOff = !showRadarOff;
+            showRadarOn = false;
+        }
+    });
+
+
+    //Creating a loop that could push sensor data if system is idle ....
+    var sendWhileIdleLoop = setInterval(function(){
+      if (iAmIdle) {
+          logger.info('I am idle and could have pushed sensor data each ' + config.get('sendWhileIdleLoopTime') / 1000 + ' seconds' );
+          hat.showHat('mail');
+          hat.showHat('clear');
+      }  
+    },config.get('sendWhileIdleLoopTime'));
+
 
 });
 
 function setIdleTimer(operation) {
-
     if (operation) {
+        iAmIdle = true;
         idleHandler = setInterval(function() {
             iAmIdle = true;
         }, config.get('IdleTimer'));
@@ -155,8 +182,6 @@ function setIdleTimer(operation) {
         iAmIdle = false;
     }
 }
-
-
 
 function fillAndSend(happyStatus, happy, sensors) {
     hat.showHat("clear");
