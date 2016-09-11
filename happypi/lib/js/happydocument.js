@@ -48,8 +48,8 @@ happyDocument.prototype.sendToHappymeter = function(callback) {
             logger.info('Stored happystatus ' + apiPath);
             callback(response.statusCode);
         } else {
-            logger.info('Unable to store happystatus -' + response.body);
-            callback(response.statusCode);
+            logger.info('Unable to store happystatus at ' + apiPath);
+            callback(500);
         }
     });
 
