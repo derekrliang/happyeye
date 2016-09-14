@@ -49,8 +49,8 @@ curl -XPOST localhost:9200/datalake?pretty -d '{
                         temperature: {type: "float", index: "not_analyzed"},
                         relativeHumidity: {type: "float", index: "not_analyzed"},
                         barometricPressure: {type: "float", index: "not_analyzed"}, 
-                        lightLevel: {"type": "float", "index": "not_analyzed"},
-                        motions: {"type": "float", "index": "not_analyzed"}
+                        lightLevel: {"type": "float", index: "not_analyzed"},
+                        motions: {"type": "integer", index: "not_analyzed"}
                     }
                  }
                 }
