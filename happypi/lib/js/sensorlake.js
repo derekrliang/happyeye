@@ -32,7 +32,7 @@ sensorData.prototype.sendToDataLake = function(callback) {
     var apiPath = happyHost + happyApiPath;
 
     this.timestamp = Date.now();
-    this.sensorLocation = config.get('SENSORLOCATION');
+    this.location = config.get('SENSORLOCATION');
 
     logger.info('Ready to send sensordata to lake ', this);
     request.post(apiPath, {
