@@ -25,6 +25,16 @@ function addDocument(document) {
 }
 exports.addDocument = addDocument;
 
+/* Add new sesnor document to datalake index */
+function addSensorDocument(document) { 
+    return elasticClient.index({
+        index: "datalake",
+        type: "datalake",
+        body: document
+    });
+}
+exports.addSensorDocument = addSensorDocument;
+
 /* List top 10 tags */
 function listTop10Tags(callback) {
     var tagsListArray=[];

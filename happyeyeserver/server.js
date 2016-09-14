@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-//Handling request towards /happy
+//Handling request towards /api...
 // Post is expecting 'application/x-www-form-urlencoded'
 
 app.post("/api/storehappydocument", function (req, res) {
@@ -67,6 +67,55 @@ app.post("/api/storehappydocument", function (req, res) {
    
 }
 );
+
+
+//Handling request towards /api/storesensordatainlake
+
+app.post("/api/storesensordatainlake", function (req, res) {
+    var tagsToStore = [];
+    var sensorDocument = JSON.parse(JSON.stringify(req.body));
+
+    console.log('Got server:post /api/storesensordatainlake ' + req.ip + ' ' + JSON.stringify(req.body));
+
+    //Overriding timestamp 
+    if (sensorDocument.timestamp === null || sensorDocument.timestamp === undefined) {
+        sensorDocument.timestamp = Date.now()
+    } else {
+        sensorDocument.timestamp = Date.now()
+    };
+
+    //Define validation check for document
+    var check = validator.isObject()
+    .withRequired('timestamp', validator.isDate({format: 'x'}))
+    .withRequired('sensorValues',validator.isObject()
+        .withOptional('temperature', validator.isNumber({allowString: true}))
+        .withOptional('barometricPressure', validator.isNumber({allowString: true}))
+        .withOptional('relativeHumidity', validator.isNumber({allowString: true}))
+        .withOptional('lightLevel', validator.isNumber({allowString: true}))
+    );
+
+    
+    validator.run(check, sensorDocument, function(errorCount, errors) {
+     
+       if (errorCount <= 0) {
+            if (!(elastic.addSensorDocument(sensorDocument))) {
+                console.log('(Failed to store) Server:post /api/storesensordatainlake ' + req.ip + ' ' + JSON.stringify(sensorDocument));
+                res.status(500).send("Failed to store sensordata");
+            } else {
+                console.log('(Stored) Server:post /api/storesensordatainlake ' + req.ip + ' ' + JSON.stringify(sensorDocument));
+                res.status(200).send("Sensordata stored successfully");
+            }
+       } else {
+         console.log('Document failed validation ' + JSON.stringify(errors));  
+         res.status(500).send("Invalid format on sensordata document");
+       };
+
+    });
+   
+}
+);
+
+
 
 // API for deep linking tabs
 // URL /api/storemoodandtag/mood/tag

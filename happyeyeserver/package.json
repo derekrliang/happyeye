@@ -20,6 +20,7 @@
     "grunt": "^0.4.0",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
-    "grunt-express-server": "^0.5.2"
+    "grunt-express-server": "^0.5.2",
+    "jshint": "^2.9.3"
   }
 }
