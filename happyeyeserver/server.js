@@ -93,6 +93,7 @@ app.post("/api/storesensordatainlake", function (req, res) {
         .withOptional('barometricPressure', validator.isNumber({allowString: true}))
         .withOptional('relativeHumidity', validator.isNumber({allowString: true}))
         .withOptional('lightLevel', validator.isNumber({allowString: true}))
+        .withOptional('motions', validator.isNumber({allowString: true}))
     );
 
     

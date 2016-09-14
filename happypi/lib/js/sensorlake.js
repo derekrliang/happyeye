@@ -50,12 +50,14 @@ sensorData.prototype.sendToDataLake = function(callback) {
 };
 
 //An object for storing sensor values
-function sensorValues(temperature, relativeHumidity, barometricPressure, lightLevel) {
+function sensorValues(temperature, relativeHumidity, barometricPressure, lightLevel, motions) {
     /*jshint validthis:true */
     this.temperature = temperature;
     this.relativeHumidity = relativeHumidity;
     this.barometricPressure = barometricPressure;
     this.lightLevel = lightLevel;
+    this.motions = motions;
+
     logger.info('Defining sensorValues');
 }
 exports.sensorValues = sensorValues;

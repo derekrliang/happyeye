@@ -193,7 +193,7 @@ function fillAndSend(happyStatus, happy) {
     sensorValues.relativeHumidity = relativeHumidity.relativeHumidity;
     sensorValues.barometricPressure = barometricPressure.pressure;
     sensorValues.lightLevel = lightLevel.value;
-
+  
     happy.happystatus = happyStatus;
     happy.sensorValues = sensorValues;
 
@@ -233,11 +233,14 @@ function fillAndSendToSensorLake() {
     sensorValues.relativeHumidity = relativeHumidity.relativeHumidity;
     sensorValues.barometricPressure = barometricPressure.pressure;
     sensorValues.lightLevel = lightLevel.value;
+    sensorValues.motions = motionCounter;
+
 
     sensorData.sensorValues = sensorValues;
 
     sensorData.sendToDataLake(function callback(responseCode) {
         if (responseCode === 200) {
+            motionCounter = 0;
             logger.info('Successfully sendt sensordata to lake');
             hat.showHat('mail');
             setIdleTimer(true);
