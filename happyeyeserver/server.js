@@ -87,6 +87,7 @@ app.post("/api/storesensordatainlake", function (req, res) {
     //Define validation check for document
     var check = validator.isObject()
     .withRequired('timestamp', validator.isDate({format: 'x'}))
+    .withRequired('location', validator.isString())
     .withRequired('sensorValues',validator.isObject()
         .withOptional('temperature', validator.isNumber({allowString: true}))
         .withOptional('barometricPressure', validator.isNumber({allowString: true}))

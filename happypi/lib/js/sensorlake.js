@@ -6,55 +6,46 @@ require('app-module-path').addPath(process.env.PWD + '/lib/js');
 
 // Defining logger
 var winston = require('winston');
-var logger = new(winston.Logger)({
+var logger = new (winston.Logger)({
     transports: [
-        new(winston.transports.Console)({
-            'timestamp': true
-        })
+        new (winston.transports.Console)({'timestamp': true})
     ]
 });
 
-var hat = require("hatworker");
 var config = require("configger");
 var request = require("request");
 
-
-
-//happyDocument constructor
-function happyDocument(happystatus, timestamp, tags, sensorValues) {
+function sensorData(timestamp, location, sensorValues) {
     /*jshint validthis:true */
-    this.happystatus = happystatus;
     this.timestamp = timestamp;
-    this.tags = tags;
+    this.location = location;
     this.sensorValues = sensorValues;
-    logger.info('Defining happydocument');
+    logger.info('Defining sensorData document');
 }
-exports.happyDocument = happyDocument;
+exports.sensorData = sensorData;
 
-//Sending happydocument to happymeter
-happyDocument.prototype.sendToHappymeter = function(callback) {
+//Sending sensorData to happymeter
+sensorData.prototype.sendToDataLake = function(callback) {
     var happyHost = config.get('HAPPYMETERHOST');
-    var happyApiPath = config.get('HAPPYAPI');
-    var happyTag = config.get('HAPPYTAGS');
-
+    var happyApiPath = config.get('SENSORLAKEAPI');
+  
     var apiPath = happyHost + happyApiPath;
 
-    this.tags = happyTag;
     this.timestamp = Date.now();
+    this.sensorLocation = config.get('SENSORLOCATION');
 
-    logger.info('Ready to send happydocument', this)
+    logger.info('Ready to send sensordata to lake ', this);
     request.post(apiPath, {
         form: this
     }, function(error, response, body) {
         if (!error && response.statusCode === 200) {
-            logger.info('Stored happystatus ' + apiPath);
+            logger.info('Stored sensordata in lake ' + apiPath);
             callback(response.statusCode);
         } else {
-            logger.info('Unable to store happystatus at ' + apiPath);
+            logger.info('Unable to store sensordata in lake at ' + apiPath);
             callback(500);
         }
     });
-
 
 };
 

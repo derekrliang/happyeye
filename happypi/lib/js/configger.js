@@ -5,9 +5,11 @@ var configger = require('nconf');
 
 // Defining logger
 var winston = require('winston');
-var logger = new (winston.Logger)({
+var logger = new(winston.Logger)({
     transports: [
-        new (winston.transports.Console)({'timestamp': true})
+        new(winston.transports.Console)({
+            'timestamp': true
+        })
     ]
 });
 

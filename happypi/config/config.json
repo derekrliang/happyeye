@@ -12,9 +12,11 @@
         "LightLevel": {
             "Pin": "A0" }     
         },          
-    "HAPPYMETERHOST": "http://localhost",
+    "HAPPYMETERHOST": "localhost",
     "HAPPYAPI": "/api/storehappydocument/",
-    "HAPPYTAGS": "stfop1",
+    "SENSORLAKEAPI": "/api/storesensordatainlake",
+    "HAPPYTAGS": "happytag",
+    "SENSORLOCATION": "happylocation",
     "IdleTimer": 8000,
     "sendWhileIdleLoopTime" : 60000
 }

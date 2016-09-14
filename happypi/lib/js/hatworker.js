@@ -3,9 +3,11 @@
 
 // Defining logger
 var winston = require('winston');
-var logger = new (winston.Logger)({
+var logger = new(winston.Logger)({
     transports: [
-        new (winston.transports.Console)({'timestamp': true})
+        new(winston.transports.Console)({
+            'timestamp': true
+        })
     ]
 });
 
@@ -34,10 +36,10 @@ function showHat(image) {
             break;
         case "mail":
             var pyshellmail = new PythonShell('./lib/py/sense-hat-showMail.py');
-            break;   
+            break;
         case "rainbow":
             var pyshellrainbow = new PythonShell('./lib/py/sense-hat-showRainbow.py');
-            break;        
+            break;
         case "clear":
             var pyshellClear = new PythonShell('./lib/py/sense-hat-clear.py');
             break;
@@ -59,7 +61,9 @@ exports.readSensors = readSensors;
 
 function showMessage(message) {
 
-     logger.info('Hatworker: Show message ' + message);
-     var pyshell = new PythonShell('./lib/py/sense-hat-showmessage.py', {args: [message]}); 
+    logger.info('Hatworker: Show message ' + message);
+    var pyshell = new PythonShell('./lib/py/sense-hat-showmessage.py', {
+        args: [message]
+    });
 }
 exports.showMessage = showMessage;

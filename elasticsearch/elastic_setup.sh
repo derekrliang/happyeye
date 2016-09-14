@@ -43,6 +43,7 @@ curl -XPOST localhost:9200/datalake?pretty -d '{
         datalake : {
             properties : {
                 timestamp: {type: "date"},
+                location: {type: "string", index: "not_analyzed"},
                 sensorValues : {
                     properties: {
                         temperature: {type: "float", index: "not_analyzed"},

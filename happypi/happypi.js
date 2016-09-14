@@ -7,6 +7,7 @@ require('app-module-path').addPath(process.env.PWD + '/lib/js');
 var five = require("johnny-five");
 var config = require("configger");
 var happydoc = require("happydocument");
+var sensorlake = require("sensorlake");
 var hat = require("hatworker");
 
 var board = new five.Board({
@@ -15,9 +16,11 @@ var board = new five.Board({
 });
 
 var winston = require('winston');
-var logger = new (winston.Logger)({
+var logger = new(winston.Logger)({
     transports: [
-        new (winston.transports.Console)({'timestamp': true})
+        new(winston.transports.Console)({
+            'timestamp': true
+        })
     ]
 });
 
@@ -41,11 +44,11 @@ board.on("ready", function() {
     var btnBelowFirstFired = false;
 
     logger.info('Board ready');
-    
+
     hat.showHat("clear");
     iAmIdle = true;
     setIdleTimer(true);
-    
+
     // Defining sensors
     // Proximity sensor (Remember pingfirmata)
 
@@ -140,12 +143,12 @@ board.on("ready", function() {
     });
 
     motion.on("motionstart", function() {
-       motionCounter++;
-       logger.info("Motion detected (" + motionCounter + ")");
-       if (iAmIdle && !showRadarOn) {
-                hat.showHat("flag");
-                showRadarOn = true;
-                showRadarOff = false;
+        motionCounter++;
+        logger.info("Motion detected (" + motionCounter + ")");
+        if (iAmIdle && !showRadarOn) {
+            hat.showHat("flag");
+            showRadarOn = true;
+            showRadarOff = false;
         }
     });
 
@@ -160,13 +163,12 @@ board.on("ready", function() {
 
 
     //Creating a loop that could push sensor data if system is idle ....
-    var sendWhileIdleLoop = setInterval(function(){
-      if (iAmIdle) {
-          hat.showHat('mail');
-          logger.info('I am idle and could have pushed sensor data each ' + config.get('sendWhileIdleLoopTime') / 1000 + ' seconds' );
-          hat.showHat('clear');
-      }  
-    },config.get('sendWhileIdleLoopTime'));
+    var sendWhileIdleLoop = setInterval(function() {
+        if (iAmIdle) {
+            logger.info('Pushing sensors to datalake');
+            fillAndSendToSensorLake();
+        }
+    }, config.get('sendWhileIdleLoopTime'));
 
 
 });
@@ -183,7 +185,7 @@ function setIdleTimer(operation) {
     }
 }
 
-function fillAndSend(happyStatus, happy, sensors) {
+function fillAndSend(happyStatus, happy) {
     hat.showHat("clear");
 
     var sensorValues = new happydoc.sensorValues();
@@ -219,6 +221,30 @@ function fillAndSend(happyStatus, happy, sensors) {
             hat.showHat("stop");
         }
     });
+}
 
+function fillAndSendToSensorLake() {
+    hat.showHat("clear");
 
+    var sensorData = new sensorlake.sensorData();
+    var sensorValues = new sensorlake.sensorValues();
+    
+    sensorValues.temperature = temperature.celsius;
+    sensorValues.relativeHumidity = relativeHumidity.relativeHumidity;
+    sensorValues.barometricPressure = barometricPressure.pressure;
+    sensorValues.lightLevel = lightLevel.value;
+
+    sensorData.sensorValues = sensorValues;
+
+    sensorData.sendToDataLake(function callback(responseCode) {
+        if (responseCode === 200) {
+            logger.info('Successfully sendt sensordata to lake');
+            hat.showHat('mail');
+            setIdleTimer(true);
+        } else {
+            logger.info('Failed to send sensordata to lake');
+            setIdleTimer(true);
+            hat.showHat("stop");
+        }
+    });
 }
