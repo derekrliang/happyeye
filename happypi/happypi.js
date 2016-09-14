@@ -162,8 +162,8 @@ board.on("ready", function() {
     //Creating a loop that could push sensor data if system is idle ....
     var sendWhileIdleLoop = setInterval(function(){
       if (iAmIdle) {
-          logger.info('I am idle and could have pushed sensor data each ' + config.get('sendWhileIdleLoopTime') / 1000 + ' seconds' );
           hat.showHat('mail');
+          logger.info('I am idle and could have pushed sensor data each ' + config.get('sendWhileIdleLoopTime') / 1000 + ' seconds' );
           hat.showHat('clear');
       }  
     },config.get('sendWhileIdleLoopTime'));

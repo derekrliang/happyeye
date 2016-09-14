@@ -4,6 +4,7 @@
 # Delete happymeter index (if exists)
 #
 #curl -XDELETE 'http://localhost:9200/happymeter' 
+#curl -XDELETE 'http://localhost:9200/datalake' 
 
 #
 # Define main index - happymeter
@@ -30,6 +31,33 @@ curl -XPOST localhost:9200/happymeter?pretty -d '{
             }
     }
 }'
+
+#
+# Define datalake 
+#
+curl -XPOST localhost:9200/datalake?pretty -d '{
+    settings : {
+        number_of_shards : 1
+    },
+    mappings : {
+        datalake : {
+            properties : {
+                timestamp: {type: "date"},
+                sensorValues : {
+                    properties: {
+                        temperature: {type: "float", index: "not_analyzed"},
+                        relativeHumidity: {type: "float", index: "not_analyzed"},
+                        barometricPressure: {type: "float", index: "not_analyzed"}, 
+                        lightLevel: {"type": "float", "index": "not_analyzed"}
+                    }
+                 }
+                }
+            }
+    }
+}'
+
+
+
 
 #
 # Create a snapshot backups (named happy_backup)
