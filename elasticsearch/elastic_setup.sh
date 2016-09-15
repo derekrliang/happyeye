@@ -19,6 +19,7 @@ curl -XPOST localhost:9200/happymeter?pretty -d '{
                 happystatus: { type: "string", index: "not_analyzed" },
                 timestamp: {type: "date"},
                 tags: {type: "string", index: "not_analyzed"},
+                comment: {type: "string", index: "analyzed"},
                 sensorValues : {
                     properties: {
                         temperature: {type: "float", index: "not_analyzed"},

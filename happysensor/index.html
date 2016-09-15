@@ -58,7 +58,7 @@ $(document).ready(function(){
     $('#below_click').click(function(){
         fade_click("#below_click");
 		if ($('#tags_form').valid()) {
-            post("below",$("#tags").val());
+            post("below",$("#tags").val(),$("#comment").val());
         } else {
            	msg = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Tags can contain only alphanumerics, status not posted</div>' 
             $("#click_status").html(msg);   
@@ -68,7 +68,7 @@ $(document).ready(function(){
     $('#above_click').click(function(){
         fade_click("#above_click");	
 		if ($('#tags_form').valid()) {
-            post("above",$("#tags").val());
+            post("above",$("#tags").val(),$("#comment").val());
         } else {
            	msg = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Tags can contain only alphanumerics, status not posted</div>' 
             $("#click_status").html(msg);  
@@ -78,7 +78,7 @@ $(document).ready(function(){
     $('#average_click').click(function(){
         fade_click("#average_click");
         if ($('#tags_form').valid()) {
-            post("average",$("#tags").val());
+            post("average",$("#tags").val(),$("#comment").val());
         } else {
            	msg = '<div class="alert alert-warning"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Tags can contain only alphanumerics, status not posted</div>' 
             $("#click_status").html(msg);   
@@ -105,12 +105,13 @@ $(document).ready(function(){
 });
 
 
-function post(status,tags) {
- console.log(status + " " + tags);	 
+function post(status,tags,comment) {
+ //console.log(status + " " + tags + " " + comment);	 
  $.post("http://localhost/api/storehappydocument",
         {
           happystatus: status,
-		  tags: tags
+		  tags: tags,
+		  comment: comment,
         },
         function(data,stat){
          if (stat==="success") {
@@ -156,10 +157,11 @@ function fade_click(item){
   				    	<input type="text" class="form-control" id="tags" name="tags">
 						<div class="form-group">
  						 	<label for="quicktopp10tags">Add top 10 tags:</label>
-							<select class="form-control" id="top10tags">
-							</select>
+							<select class="form-control" id="top10tags"></select>
+						</div>		
+						<label for="comment">Comment:</label>
+  				    	<input type="text" class="form-control" id="comment" name="comment">
 					</form>
-				</div>
 			</div>
 	   </div> <!-- tag field -->	
 	</div><!-- panel body -->
@@ -180,6 +182,8 @@ function fade_click(item){
 			 <b>Tags</b><p>
 			 Add tags represented as words containing alphanumerics. Minimum tag length is 3 chars. All tags will be converted to lower case. Tags with illegal chars will be discarded.
 			 You can add a tag as many times as you like. Select from top10 tags for easy access to the most popular ones. Tags can be used to filter results.</p>	 
+			 <b>Comment</b><p>
+			 Yepp - you can add a comment to support your happystatus. How cool is that!</p>
 			 <b>Frequency</b><p>
 			 You can submit feedback as often as you want, but twice a day is perhaps enough.
 			 We have no throttling mechanism avoiding anyone from hammering the system with feedback.</p>

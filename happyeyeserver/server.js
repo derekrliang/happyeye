@@ -11,13 +11,15 @@ var elastic = require('./elasticsearch');
 var port = normalizePort(process.env.PORT || '3000');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(cors());
 
 //Handling request towards /api...
 // Post is expecting 'application/x-www-form-urlencoded'
 
-app.post("/api/storehappydocument", function (req, res) {
+app.post("/api/storehappydocument", function(req, res) {
     var tagsToStore = [];
     var happydocument = JSON.parse(JSON.stringify(req.body));
 
@@ -32,25 +34,49 @@ app.post("/api/storehappydocument", function (req, res) {
 
     //Define validation check for document
     var check = validator.isObject()
-    .withRequired('happystatus', validator.isString({ regex: /above|average|below/ }))
-    .withRequired('timestamp', validator.isDate({format: 'x'}))
-    .withOptional('tags', validator.isString())
-    .withOptional('sensorValues',validator.isObject()
-        .withOptional('temperature', validator.isNumber({allowString: true}))
-        .withOptional('barometricPressure', validator.isNumber({allowString: true}))
-        .withOptional('relativeHumidity', validator.isNumber({allowString: true}))
-        .withOptional('lightLevel', validator.isNumber({allowString: true}))
-    );
+        .withRequired('happystatus', validator.isString({
+            regex: /above|average|below/
+        }))
+        .withRequired('timestamp', validator.isDate({
+            format: 'x'
+        }))
+        .withOptional('tags', validator.isString())
+        .withOptional('comment', validator.isString())
+        .withOptional('sensorValues', validator.isObject()
+            .withOptional('temperature', validator.isNumber({
+                allowString: true
+            }))
+            .withOptional('barometricPressure', validator.isNumber({
+                allowString: true
+            }))
+            .withOptional('relativeHumidity', validator.isNumber({
+                allowString: true
+            }))
+            .withOptional('lightLevel', validator.isNumber({
+                allowString: true
+            }))
+        );
 
-    if (happydocument.tags === null || happydocument.tags === undefined) {
-        tagsToStore = processTags(req.body.tags);
-        happydocument.tags = tagsToStore;
-        console.log('Processing tags  storing ' + happydocument.tags);
-    }
-    
+
     validator.run(check, happydocument, function(errorCount, errors) {
-     
-       if (errorCount <= 0) {
+
+        if (errorCount <= 0) {
+
+        if (happydocument.hasOwnProperty('tags')) {
+                if (happydocument.tags.length > 0) {
+                    console.log('Processing tags  storing ' + happydocument.tags);
+                    tagsToStore = processTags(happydocument.tags);
+                    happydocument.tags = tagsToStore;
+                }
+            }
+
+            if (happydocument.hasOwnProperty('comment')) {
+                if (happydocument.comment.length > 0) {
+                    console.log('Processing comment field ' + happydocument.comment);
+                    //Do some validation - replacements?
+                }
+            }
+
             if (!(elastic.addDocument(happydocument))) {
                 console.log('(Failed to store) Server:post /happy ' + req.ip + ' ' + JSON.stringify(happydocument));
                 res.status(500).send("Failed to store happy status");
@@ -58,20 +84,19 @@ app.post("/api/storehappydocument", function (req, res) {
                 console.log('(Stored) Server:post /happy ' + req.ip + ' ' + JSON.stringify(happydocument));
                 res.status(200).send("Happy status stored successfully");
             }
-       } else {
-         console.log('Document failed validation ' + JSON.stringify(errors));  
-         res.status(500).send("Invalid format on document");
-       };
+        } else {
+            console.log('Document failed validation ' + JSON.stringify(errors));
+            res.status(500).send("Invalid format on document");
+        };
 
     });
-   
-}
-);
+
+});
 
 
 //Handling request towards /api/storesensordatainlake
 
-app.post("/api/storesensordatainlake", function (req, res) {
+app.post("/api/storesensordatainlake", function(req, res) {
     var tagsToStore = [];
     var sensorDocument = JSON.parse(JSON.stringify(req.body));
 
@@ -86,20 +111,32 @@ app.post("/api/storesensordatainlake", function (req, res) {
 
     //Define validation check for document
     var check = validator.isObject()
-    .withRequired('timestamp', validator.isDate({format: 'x'}))
-    .withRequired('location', validator.isString())
-    .withRequired('sensorValues',validator.isObject()
-        .withOptional('temperature', validator.isNumber({allowString: true}))
-        .withOptional('barometricPressure', validator.isNumber({allowString: true}))
-        .withOptional('relativeHumidity', validator.isNumber({allowString: true}))
-        .withOptional('lightLevel', validator.isNumber({allowString: true}))
-        .withOptional('motions', validator.isNumber({allowString: true}))
-    );
+        .withRequired('timestamp', validator.isDate({
+            format: 'x'
+        }))
+        .withRequired('location', validator.isString())
+        .withRequired('sensorValues', validator.isObject()
+            .withOptional('temperature', validator.isNumber({
+                allowString: true
+            }))
+            .withOptional('barometricPressure', validator.isNumber({
+                allowString: true
+            }))
+            .withOptional('relativeHumidity', validator.isNumber({
+                allowString: true
+            }))
+            .withOptional('lightLevel', validator.isNumber({
+                allowString: true
+            }))
+            .withOptional('motions', validator.isNumber({
+                allowString: true
+            }))
+        );
 
-    
+
     validator.run(check, sensorDocument, function(errorCount, errors) {
-     
-       if (errorCount <= 0) {
+
+        if (errorCount <= 0) {
             if (!(elastic.addSensorDocument(sensorDocument))) {
                 console.log('(Failed to store) Server:post /api/storesensordatainlake ' + req.ip + ' ' + JSON.stringify(sensorDocument));
                 res.status(500).send("Failed to store sensordata");
@@ -107,15 +144,14 @@ app.post("/api/storesensordatainlake", function (req, res) {
                 console.log('(Stored) Server:post /api/storesensordatainlake ' + req.ip + ' ' + JSON.stringify(sensorDocument));
                 res.status(200).send("Sensordata stored successfully");
             }
-       } else {
-         console.log('Document failed validation ' + JSON.stringify(errors));  
-         res.status(500).send("Invalid format on sensordata document");
-       };
+        } else {
+            console.log('Document failed validation ' + JSON.stringify(errors));
+            res.status(500).send("Invalid format on sensordata document");
+        };
 
     });
-   
-}
-);
+
+});
 
 
 
@@ -123,7 +159,7 @@ app.post("/api/storesensordatainlake", function (req, res) {
 // URL /api/storemoodandtag/mood/tag
 // mood = {above,average,below}
 // tag = {anyvalidtag}
-app.get("/api/storemoodandtag/*", function (req, res) {
+app.get("/api/storemoodandtag/*", function(req, res) {
     console.log('Server:get /api/storemoodandtag');
 
     var urlArr = req.url.split("/");
@@ -159,24 +195,24 @@ app.get("/api/storemoodandtag/*", function (req, res) {
 
 
 // API for getting top 10 tags
-app.get("/api/tags/top10", function (req, res) {
+app.get("/api/tags/top10", function(req, res) {
     console.log('Server:get /api/tags/top10/ ip:' + req.ip);
 
     elastic.listTop10Tags(function(tagsList) {
-     console.log("/api/tags/top10/ returns " + JSON.stringify(tagsList));
-     res.status(200).send(tagsList); 
+        console.log("/api/tags/top10/ returns " + JSON.stringify(tagsList));
+        res.status(200).send(tagsList);
     });
 
 });
 
 
 // A bit of error response on most used urls
-app.get("/", function (req, res) {
+app.get("/", function(req, res) {
     console.log('Server:get / (501, Not implemented)');
     res.status(501).send('Not implemented');
 });
 
-app.post("/", function (req, res) {
+app.post("/", function(req, res) {
     console.log('Server:post / (501, Not implemented)');
     res.status(501).send('Not implemented');
 });
@@ -212,7 +248,7 @@ function processTags(tagString) {
     var tagsSplit = lowerTags.split(" ");
 
     console.log('Processing tags: ' + tagString);
-    tagsSplit.forEach(function (arrayItem) {
+    tagsSplit.forEach(function(arrayItem) {
         var testPatteren = new RegExp("^[a-zA-Z0-9]+$");
 
         if (testPatteren.test(arrayItem)) {
