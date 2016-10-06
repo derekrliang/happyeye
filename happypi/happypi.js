@@ -50,12 +50,7 @@ board.on("ready", function() {
     setIdleTimer(true);
 
     // Defining sensors
-<<<<<<< HEAD
-
     var motion = new five.Motion({
-=======
-   var motion = new five.Motion({
->>>>>>> dd497303010b07ef13936aecb9b58db09cfb9a39
         pin: sensorsConfig.Motion.Pin,
         freq: sensorsConfig.SensorSamplingRate
     });
