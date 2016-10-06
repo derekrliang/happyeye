@@ -27,7 +27,7 @@ var logger = new(winston.Logger)({
 var sensorsConfig = config.get('Sensors');
 
 //Making vars for sensors that we will send globals 
-var temperature, relativeHumidity, barometricPressure, lightLevel;
+var temperature, relativeHumidity, barometricPressure, lightLevel, lux;
 
 // Some globale vars
 var idleHandler, iAmIdle = false;
@@ -50,7 +50,6 @@ board.on("ready", function() {
     setIdleTimer(true);
 
     // Defining sensors
-    // Proximity sensor (Remember pingfirmata)
 
     var motion = new five.Motion({
         pin: sensorsConfig.Motion.Pin,
@@ -76,10 +75,9 @@ board.on("ready", function() {
         address: 0x76
     });
 
-    // Not there yet
-    //    var lux = new five.Light({
-    //         controller: "TSL2561"
-    //     });
+    lux = new five.Light({
+        controller: "TSL2561"
+    });
 
     // Buttons
     var btnAbove = new five.Button({
@@ -192,7 +190,9 @@ function fillAndSend(happyStatus, happy) {
     sensorValues.temperature = temperature.celsius;
     sensorValues.relativeHumidity = relativeHumidity.relativeHumidity;
     sensorValues.barometricPressure = barometricPressure.pressure;
-    sensorValues.lightLevel = lightLevel.value;
+    //sensorValues.lightLevel = lightLevel.value;
+    sensorValues.lightLevel = lux.lux;
+  
   
     happy.happystatus = happyStatus;
     happy.sensorValues = sensorValues;
@@ -232,7 +232,8 @@ function fillAndSendToSensorLake() {
     sensorValues.temperature = temperature.celsius;
     sensorValues.relativeHumidity = relativeHumidity.relativeHumidity;
     sensorValues.barometricPressure = barometricPressure.pressure;
-    sensorValues.lightLevel = lightLevel.value;
+    //sensorValues.lightLevel = lightLevel.value;
+    sensorValues.lightLevel = lux.lux;
     sensorValues.motions = motionCounter;
 
 
