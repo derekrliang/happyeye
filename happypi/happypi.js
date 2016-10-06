@@ -50,9 +50,7 @@ board.on("ready", function() {
     setIdleTimer(true);
 
     // Defining sensors
-    // Proximity sensor (Remember pingfirmata)
-
-    var motion = new five.Motion({
+   var motion = new five.Motion({
         pin: sensorsConfig.Motion.Pin,
         freq: sensorsConfig.SensorSamplingRate
     });
