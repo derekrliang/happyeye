@@ -15,8 +15,8 @@ Work has just started - we will evolve with the demand :)
 
 ### API
 * Http post on /happy with two params 
-  *happystatus:(above|average|below)
-  *tags:(string with tags)
+  * happystatus:(above|average|below)
+  * tags:(string with tags)
 * Http get on /api/storemoodandtag/(above|average|below)/(string with tags)  (Example /api/storemoodandtag/above/ilovecoding)
 
 ### Deployment
